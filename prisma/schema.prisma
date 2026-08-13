@@ -1,0 +1,88 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model AdminAccount {
+  id       String @id @default(cuid())
+  name     String
+  username String @unique
+  password String
+
+  configuration Configuration?
+}
+
+model Configuration {
+  id String @id @default(cuid())
+
+  adminAccountId String       @unique
+  adminAccount   AdminAccount @relation(fields: [adminAccountId], references: [id])
+
+  spreadsheet Spreadsheet?
+
+  @@map("Configurations")
+}
+
+model Spreadsheet {
+  id String @id @default(cuid())
+
+  spreadsheetId String
+  year          Int
+
+  configurationId String        @unique
+  configuration   Configuration @relation(fields: [configurationId], references: [id])
+}
+
+model BorrowLog {
+  id String @id @default(cuid())
+
+  date        DateTime @default(now())
+  bookBarcode String
+  bookTitle   String
+  bookAuthor  String[]
+  callNumber  String
+  copies      Int
+
+  borrowerId String
+  borrower   Borrower @relation(fields: [borrowerId], references: [id])
+}
+
+model Borrower {
+  id String @id @default(cuid())
+
+  idNumber  String
+  name      String
+  yearLevel Int
+
+  borrowLogs BorrowLog[]
+
+  programId String
+  program   Program @relation(fields: [programId], references: [id])
+
+  departmendId String
+  department   Department @relation(fields: [departmendId], references: [id])
+}
+
+model Program {
+  id String @id @default(cuid())
+
+  programName String
+
+  borrowers Borrower[]
+
+  departmentsId String     @unique
+  departments   Department @relation(fields: [departmentsId], references: [id])
+}
+
+model Department {
+  id String @id @default(cuid())
+
+  borrowers Borrower[]
+
+  departmentName String
+  programs       Program[]
+}
