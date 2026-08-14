@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Login from "./LoginForm";
+import Login from "./LoginComponent";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { logsPage } from "@/constants";
@@ -17,6 +17,7 @@ export default async function AdminLoginPage() {
                width={1000}
                height={1000}
                className="absolute inset-0 size-full object-cover"
+               loading="eager"
             />
             <div className="bg-green-primary/70 absolute inset-0" />
             <Image
