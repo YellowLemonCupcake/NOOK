@@ -10,6 +10,7 @@ import type { NextAuthOptions } from "next-auth";
 import { getServerSession } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
+import { cache } from "react";
 
 export const authOptions = {
    providers: [
@@ -59,7 +60,7 @@ export const authOptions = {
    },
 } satisfies NextAuthOptions;
 
-export function auth(
+function _auth(
    ...args:
       | [GetServerSidePropsContext["req"], GetServerSidePropsContext["res"]]
       | [NextApiRequest, NextApiResponse]
@@ -67,3 +68,5 @@ export function auth(
 ) {
    return getServerSession(...args, authOptions);
 }
+
+export const auth = cache(_auth);

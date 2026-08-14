@@ -1,7 +1,7 @@
 "use client";
 import clsx from "clsx";
-import Image from "next/image";
 import { useState } from "react";
+import { Nook2 } from "./Images";
 //  https://herolearningcommons.vercel.app/
 
 function TopBorrowers() {
@@ -41,7 +41,7 @@ export default function Landing() {
    return (
       <div className="my-auto hidden grid-cols-2 bg-white py-7 sm:grid">
          <div className="flex flex-col items-center space-y-7 px-2 py-8">
-            <Image src={"/icon3.svg"} alt="" width={331} height={142} />
+            <Nook2 width={331} height={142} />
             <p
                className="font-funnel-sans max-w-82.75 text-justify"
                style={{ fontSize: "14px", lineHeight: "18px" }}
