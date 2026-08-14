@@ -1,16 +1,31 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "./lib/auth";
-import { redirect } from "next/navigation";
-import { adminLoginPage } from "./constants";
+import {
+   adminLoginPage,
+   configurationsPage,
+   logsPage,
+   scannerPage,
+   settingsPage,
+   studentRecordsPage,
+} from "./constants";
+
+const protectedRoutes = [
+   logsPage,
+   studentRecordsPage,
+   scannerPage,
+   configurationsPage,
+   settingsPage,
+];
 
 export default async function proxy(req: NextRequest) {
-   const session = await auth();
-   if (!session) {
-      return NextResponse.redirect(new URL(adminLoginPage, req.url));
+   const pathname = req.nextUrl.pathname;
+
+   if (protectedRoutes.some((pr) => pathname.includes(pr))) {
+      const session = await auth();
+      if (!session) {
+         return NextResponse.redirect(new URL(adminLoginPage, req.url));
+      }
    }
+
    return NextResponse.next();
 }
-
-export const config = {
-   matcher: ["/logs"],
-};

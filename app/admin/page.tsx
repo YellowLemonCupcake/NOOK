@@ -3,6 +3,7 @@ import Login from "./LoginComponent";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { logsPage } from "@/constants";
+import { Nook1, Nook2 } from "@/components/Images";
 
 export default async function AdminLoginPage() {
    const session = await auth();
@@ -20,12 +21,9 @@ export default async function AdminLoginPage() {
                loading="eager"
             />
             <div className="bg-green-primary/70 absolute inset-0" />
-            <Image
-               src={"/icon2.svg"}
-               alt=""
+            <Nook1
                width={408}
                height={174}
-               draggable={false}
                className="absolute inset-0 m-auto max-w-90 px-6"
             />
          </section>
