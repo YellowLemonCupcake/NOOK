@@ -135,6 +135,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
                         ? "bg-yellow-primary pointer-events-none text-black"
                         : "hover:bg-white/8 focus-visible:bg-white/8",
                   )}
+                  onClick={() => toggleMobileSidebar(false)}
                >
                   <span>
                      <Settings />
