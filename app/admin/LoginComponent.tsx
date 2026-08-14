@@ -1,5 +1,6 @@
 "use client";
 import { logsPage } from "@/constants";
+import { LoaderCircle } from "lucide-react";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { SubmitEvent, useEffect, useState } from "react";
@@ -11,9 +12,13 @@ function LoginForm() {
       username: "",
       password: "",
    });
+   const [isPending, setIsPending] = useState(false);
    const [error, setError] = useState("");
+
    const handleCredentialsSubmit = async (e: SubmitEvent) => {
       e.preventDefault();
+      if (isPending) return;
+      setIsPending(true);
 
       const username = credentials.username;
       const password = credentials.password;
@@ -32,8 +37,9 @@ function LoginForm() {
          router.replace(logsPage);
          setError("");
       }
+      setIsPending(false);
    };
-   const handleGoogle = () => signIn("google");
+   const handleGoogle = () => signIn("google", { callbackUrl: logsPage });
 
    return (
       <form
@@ -78,10 +84,14 @@ function LoginForm() {
             {error}
          </p>
          <button
-            className="font-inter bg-green-primary text-white-primary font-lg w-full rounded-lg bg-linear-to-b to-transparent py-3 text-sm not-active:from-white/12"
+            className="font-inter bg-green-primary text-white-primary font-lg flex h-11 w-full items-center justify-center rounded-lg bg-linear-to-b to-transparent text-sm not-active:from-white/12"
             type="submit"
          >
-            Log In
+            {isPending ? (
+               <LoaderCircle className="animate-spin" size={20} />
+            ) : (
+               "Log In"
+            )}
          </button>
          <div className="relative z-100">
             <div className="absolute inset-0 -z-10 m-auto h-px bg-gray-400" />
