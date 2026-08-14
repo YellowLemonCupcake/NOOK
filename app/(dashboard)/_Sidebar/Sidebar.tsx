@@ -96,7 +96,11 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
             >
                <X size={30} />
             </button>
-            <Nook1 width={180} height={68} className="m-auto mt-15 mb-10" />
+            <Nook1
+               width={180}
+               height={68}
+               className="m-auto mt-15 mb-10 size-auto w-45"
+            />
             <div className="font-inter text-white-primary text-lg font-medium">
                {links.map((l) => (
                   <Link

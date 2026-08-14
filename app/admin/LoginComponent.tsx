@@ -101,12 +101,11 @@ function LoginForm() {
 }
 
 export default function Login() {
-   const router = useRouter();
    const { status } = useSession();
 
    useEffect(() => {
-      if (status === "authenticated") router.replace(logsPage);
-   }, [router, status]);
+      if (status === "authenticated") window.location.replace(logsPage);
+   }, [status]);
 
    return (
       status === "unauthenticated" && (
