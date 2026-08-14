@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Funnel_Sans } from "next/font/google";
 import "./globals.css";
 import clsx from "clsx";
+import { AuthProvider } from "./providers";
 
 const funnelSans = Funnel_Sans({
    variable: "--font-funnel-sans",
@@ -28,7 +29,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             "h-full antialiased",
          )}
       >
-         <body className="flex min-h-full flex-col">{children}</body>
+         <body className="flex min-h-full flex-col">
+            <AuthProvider>{children}</AuthProvider>
+         </body>
       </html>
    );
 }

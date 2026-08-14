@@ -1,5 +1,6 @@
 // Reference: https://next-auth.js.org/configuration/nextjs#getserversession
 
+import { adminLoginPage } from "@/constants";
 import type {
    GetServerSidePropsContext,
    NextApiRequest,
@@ -8,6 +9,7 @@ import type {
 import type { NextAuthOptions } from "next-auth";
 import { getServerSession } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import GoogleProvider from "next-auth/providers/google";
 
 export const authOptions = {
    providers: [
@@ -37,9 +39,24 @@ export const authOptions = {
             return { id: "1", name: "Library Admin" };
          },
       }),
+      GoogleProvider({
+         clientId: process.env.AUTH_GOOGLE_CLIENT!,
+         clientSecret: process.env.AUTH_GOOGLE_SECRET!,
+      }),
    ],
+   callbacks: {
+      async signIn({ account }) {
+         if (account?.provider === "google") return false;
+         return true;
+      },
+   },
    secret: process.env.AUTH_SECRET,
    session: { strategy: "jwt" },
+   pages: {
+      signIn: adminLoginPage,
+      error: adminLoginPage,
+      signOut: adminLoginPage,
+   },
 } satisfies NextAuthOptions;
 
 export function auth(
