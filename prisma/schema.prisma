@@ -19,23 +19,10 @@ model AdminAccount {
 
 model Configuration {
   id String @id @default(cuid())
+  speadsheetId String
 
   adminAccountId String       @unique
   adminAccount   AdminAccount @relation(fields: [adminAccountId], references: [id])
-
-  spreadsheet Spreadsheet?
-
-  @@map("Configurations")
-}
-
-model Spreadsheet {
-  id String @id @default(cuid())
-
-  spreadsheetId String
-  year          Int
-
-  configurationId String        @unique
-  configuration   Configuration @relation(fields: [configurationId], references: [id])
 }
 
 model BorrowLog {
@@ -64,26 +51,28 @@ model Borrower {
   programId String
   program   Program @relation(fields: [programId], references: [id])
 
-  departmendId String
-  department   Department @relation(fields: [departmendId], references: [id])
+  collegeId String
+  college   College @relation(fields: [collegeId], references: [id])
 }
 
 model Program {
   id String @id @default(cuid())
 
   programName String
+  programAbbreviation String
 
   borrowers Borrower[]
 
-  departmentsId String     @unique
-  departments   Department @relation(fields: [departmentsId], references: [id])
+  collegeId String     @unique
+  college   College @relation(fields: [collegeId], references: [id])
 }
 
-model Department {
+model College {
   id String @id @default(cuid())
 
   borrowers Borrower[]
 
-  departmentName String
+  collegeName String
+  collegeAbbreviation String
   programs       Program[]
 }

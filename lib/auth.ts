@@ -30,7 +30,7 @@ export const authOptions = {
                return null;
             }
             if (
-               credentials.username !== "admin" &&
+               credentials.username !== "admin" ||
                credentials.password !== "admin123"
             ) {
                return null;
