@@ -37,12 +37,14 @@ model BorrowLog {
 
   borrowerId String
   borrower   Borrower @relation(fields: [borrowerId], references: [id])
+  @@index([date])
+  @@index([borrowerId, date])
 }
 
 model Borrower {
   id String @id @default(cuid())
 
-  idNumber  String
+  idNumber  String @unique
   name      String
   yearLevel Int
 

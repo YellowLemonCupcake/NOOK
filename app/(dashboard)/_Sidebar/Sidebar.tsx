@@ -82,7 +82,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
       <>
          <nav
             className={clsx(
-               "fixed z-100 flex h-dvh w-full flex-col overflow-y-auto bg-[#34A853] px-7 py-5 transition-transform select-none sm:w-80",
+               "fixed z-100 flex h-dvh w-full flex-col overflow-auto bg-[#34A853] px-7 py-5 transition-transform select-none sm:w-80",
                sidebarSwitch.mobile ? "translate-x-0" : "-translate-x-full",
                sidebarSwitch.desktop
                   ? "md:translate-x-0"
@@ -109,7 +109,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
                      className={clsx(
                         "flex items-center gap-2 rounded-md p-3 outline-0",
                         pathname === l.route
-                           ? "bg-yellow-primary pointer-events-none text-black"
+                           ? "bg-yellow-primary pointer-events-none text-black shadow-sm"
                            : "hover:bg-white/8 focus-visible:bg-white/8",
                      )}
                      onClick={() => toggleMobileSidebar(false)}
@@ -132,7 +132,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
                   className={clsx(
                      "flex items-center gap-2 rounded-md p-3 outline-0",
                      pathname.includes(settingsPage)
-                        ? "bg-yellow-primary pointer-events-none text-black"
+                        ? "bg-yellow-primary pointer-events-none text-black shadow-sm"
                         : "hover:bg-white/8 focus-visible:bg-white/8",
                   )}
                   onClick={() => toggleMobileSidebar(false)}
@@ -151,38 +151,46 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
             </div>
          </nav>
 
+         {/* Header */}
+         <header
+            className={clsx(
+               "bg-green-primary fixed inset-x-0 top-0 flex h-15 items-center px-4 shadow-[0_4px_4px_rgba(0,0,0,0.25)] transition-[left] select-none",
+               sidebarSwitch.desktop && "md:left-81",
+            )}
+         >
+            <button
+               className="text-white-primary hidden md:block"
+               onClick={() => toggleDesktopSidebar()}
+            >
+               <Menu size={30} />
+            </button>
+            <button
+               className="text-white-primary md:hidden"
+               onClick={() => toggleMobileSidebar()}
+            >
+               <Menu size={30} />
+            </button>
+            <p className="font-inter text-white-primary ml-3 text-xl font-medium">
+               {routeLabels.find((e) => pathname.includes(e[0]))?.at(1) ?? ""}
+            </p>
+         </header>
+
          {/* Content */}
          <main
             className={clsx(
-               "pt-15 transition-[padding]",
-               sidebarSwitch.desktop && "md:pl-80",
+               "min-h-screen pt-15 pb-6.25 transition-[padding]",
+               sidebarSwitch.desktop && "md:pl-81",
             )}
          >
-            <header
-               className={clsx(
-                  "bg-green-primary fixed inset-x-0 top-0 flex h-15 items-center px-4 transition-[padding] select-none",
-                  sidebarSwitch.desktop && "md:pl-84",
-               )}
-            >
-               <button
-                  className="text-white-primary hidden md:block"
-                  onClick={() => toggleDesktopSidebar()}
-               >
-                  <Menu size={30} />
-               </button>
-               <button
-                  className="text-white-primary md:hidden"
-                  onClick={() => toggleMobileSidebar()}
-               >
-                  <Menu size={30} />
-               </button>
-               <p className="font-inter text-white-primary ml-3 text-xl font-medium">
-                  {routeLabels.find((e) => pathname.includes(e[0]))?.at(1) ??
-                     ""}
-               </p>
-            </header>
             {children}
          </main>
+
+         <footer
+            className={clsx(
+               "bg-green-primary fixed inset-x-0 bottom-0 h-6.25 transition-[left]",
+               sidebarSwitch.desktop && "md:left-81",
+            )}
+         ></footer>
       </>
    );
 }

@@ -11,7 +11,8 @@
 
   /* Fonts */
   --font-funnel-sans: var(--font-funnel-sans);
-  --font-inter: var(--font-inter)
+  --font-inter: var(--font-inter);
+  --font-roboto: var(--font-roboto);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -19,6 +20,11 @@
     /* --background: #0a0a0a;
     --foreground: #ededed; */
   }
+}
+
+*::selection {
+  background-color: #F9DC07;
+  color: #333;
 }
 
 body {

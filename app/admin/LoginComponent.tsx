@@ -30,7 +30,7 @@ function LoginForm() {
       if (!response.ok) {
          setError(
             response.status === 401
-               ? "Invalid username and password"
+               ? "Invalid credentials"
                : "Unexpecred error occured",
          );
       } else {
@@ -76,10 +76,10 @@ function LoginForm() {
             }}
             className="bg-white-primary font-inter block w-full rounded-lg p-3 text-sm font-medium outline-0 placeholder:select-none"
          />
-         <div className="font-inter my-4 flex gap-2 text-xs font-medium text-[#6C7278] select-none">
+         {/* <div className="font-inter my-4 flex gap-2 text-xs font-medium text-[#6C7278] select-none">
             <input name="remember" id="remember" type="checkbox" />
             <label htmlFor="remember">Remember me</label>
-         </div>
+         </div> */}
          <p className="font-inter flex gap-2 text-sm font-medium text-red-800 select-none">
             {error}
          </p>
