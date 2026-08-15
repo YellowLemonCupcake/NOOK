@@ -18,6 +18,7 @@ const protectedRoutes = [
 ];
 
 export default async function proxy(req: NextRequest) {
+   const url = new URL(req.url);
    const pathname = req.nextUrl.pathname;
 
    if (protectedRoutes.some((pr) => pathname.includes(pr))) {
@@ -27,5 +28,9 @@ export default async function proxy(req: NextRequest) {
       }
    }
 
-   return NextResponse.next();
+   return NextResponse.next({
+      headers: {
+         "x-pathname": url.pathname + url.search,
+      },
+   });
 }
