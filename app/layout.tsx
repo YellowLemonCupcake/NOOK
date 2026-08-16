@@ -41,6 +41,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
                closeButton={false}
                closeOnClick
                toastClassName={"font-semibold"}
+               pauseOnHover={false}
             />
             <AuthProvider>{children}</AuthProvider>
          </body>

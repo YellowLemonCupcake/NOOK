@@ -33,7 +33,7 @@ export default function ChangeEmail() {
 
    return (
       <form
-         className="font-inter mt-2"
+         className="font-inter"
          action={formAction}
          onSubmit={(e) => {
             if (!edited) e.preventDefault();
