@@ -27,3 +27,17 @@ export function Nook2(props: Partial<ImageProps>) {
       />
    );
 }
+
+export function Library(props: Partial<ImageProps>) {
+   return (
+      <Image
+         src={"/library.jpg"}
+         alt=""
+         draggable={false}
+         width={2000}
+         height={2000}
+         loading="eager"
+         {...props}
+      />
+   );
+}

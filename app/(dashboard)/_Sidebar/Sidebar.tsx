@@ -98,11 +98,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
             >
                <X size={30} />
             </button>
-            <Nook1
-               width={180}
-               height={68}
-               className="m-auto mt-15 mb-10 size-auto w-45"
-            />
+            <Nook1 width={180} className="m-auto mt-15 mb-10 w-45" />
             <div className="font-inter text-white-primary text-lg font-medium">
                {links.map((l) => (
                   <Link
@@ -111,7 +107,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
                      className={clsx(
                         "flex items-center gap-2 rounded-md p-3 outline-0",
                         pathname === l.route
-                           ? "bg-yellow-primary pointer-events-none text-black shadow-sm"
+                           ? "bg-yellow-primary pointer-events-none text-gray-800 shadow-sm"
                            : "hover:bg-white/8 focus-visible:bg-white/8",
                      )}
                      onClick={() => toggleMobileSidebar(false)}
@@ -134,7 +130,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
                   className={clsx(
                      "flex items-center gap-2 rounded-md p-3 outline-0",
                      pathname.includes(settingsPage)
-                        ? "bg-yellow-primary pointer-events-none text-black shadow-sm"
+                        ? "bg-yellow-primary pointer-events-none text-gray-800 shadow-sm"
                         : "hover:bg-white/8 focus-visible:bg-white/8",
                   )}
                   onClick={() => toggleMobileSidebar(false)}
@@ -156,7 +152,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
          {/* Header */}
          <header
             className={clsx(
-               "bg-green-primary fixed inset-x-0 top-0 flex h-15 items-center px-4 shadow-[0_4px_4px_rgba(0,0,0,0.25)] transition-[left] select-none",
+               "bg-green-primary fixed inset-x-0 top-0 z-100 flex h-15 items-center px-4 shadow-[0_4px_4px_rgba(0,0,0,0.25)] transition-[left] select-none",
                sidebarSwitch.desktop && "md:left-81",
             )}
          >

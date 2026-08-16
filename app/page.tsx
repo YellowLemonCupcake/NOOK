@@ -1,4 +1,4 @@
-import { Nook1, Nook2 } from "@/components/Images";
+import { Library, Nook1, Nook2 } from "@/components/Images";
 import Landing from "@/components/Landing";
 import { adminLoginPage } from "@/constants";
 import { Menu } from "lucide-react";
@@ -28,15 +28,7 @@ export default async function Home() {
          </nav>
          <div className="absolute inset-x-0 top-14 flex min-h-screen grow flex-col">
             <div className="absolute inset-0 -z-10">
-               <Image
-                  src={"/library.jpg"}
-                  alt=""
-                  draggable={false}
-                  width={2000}
-                  height={2000}
-                  loading="eager"
-                  className="absolute inset-0 size-full object-cover"
-               />
+               <Library className="absolute inset-0 size-full object-cover" />
                <div className="bg-green-primary/70 absolute inset-0" />
             </div>
             <Landing />

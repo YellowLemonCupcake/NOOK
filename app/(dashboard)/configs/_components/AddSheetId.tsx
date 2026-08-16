@@ -1,33 +1,50 @@
 "use client";
 
-import SetSheedIdAction from "@/actions/Configurations/SetSheetId";
+import setSheetIdAction from "@/actions/Configurations/SetSheetId";
+import { sheetIdRoute } from "@/constants";
+import clsx from "clsx";
 import { Copy, Link, LoaderCircle } from "lucide-react";
 import Image from "next/image";
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 export function AddSheetId({
-   existingId,
    serviceAccountEmail,
 }: {
-   existingId?: string;
    serviceAccountEmail: string;
 }) {
-   const [sheetIdInput, setSheetIdInput] = useState(existingId ?? "");
-   const edited = existingId !== sheetIdInput;
+   const [currentId, setCurrentId] = useState<string | null>(null);
+   const [sheetIdInput, setSheetIdInput] = useState(currentId ?? "");
+   const edited = currentId !== sheetIdInput && currentId;
 
    const [, formAction, isPending] = useActionState(async () => {
-      if (isPending) return;
+      if (isPending || !edited) return;
 
-      const res = await SetSheedIdAction(sheetIdInput);
+      const res = await setSheetIdAction(sheetIdInput);
       if (res.success) {
          toast.success(res.message);
          setSheetIdInput(res.id);
+         setCurrentId(res.id);
       } else toast.error(res.error);
    }, null);
 
+   useEffect(() => {
+      (async () => {
+         const res = await fetch(sheetIdRoute);
+         const data: { status: "error" } | { status: "success"; id: string } =
+            await res.json();
+         if (data.status === "error") {
+            setCurrentId("Something went wrong. Please contact the dev.");
+            setSheetIdInput("Something went wrong. Please contact the dev.");
+         } else {
+            setCurrentId(data.id);
+            setSheetIdInput(data.id);
+         }
+      })();
+   }, []);
+
    return (
-      <form className="font-inter max-w-138 select-none" action={formAction}>
+      <form className="font-inter max-w-150 select-none" action={formAction}>
          <label
             htmlFor="sheetid"
             className="mb-2 flex items-center gap-2 text-xl font-medium text-gray-600"
@@ -38,31 +55,42 @@ export function AddSheetId({
                width={17}
                height={20}
                draggable={false}
-               className="h-full"
             />
             <span className="self-end">Google Sheet ID</span>
          </label>
          <div className="flex items-stretch gap-1.5">
-            <div className="flex w-full max-w-120 items-center rounded-lg border border-gray-400">
-               <span className="m-2">
-                  <Link size={18} />
-               </span>
-               <input
-                  spellCheck={false}
-                  type="text"
-                  name="sheetId"
-                  id="sheetId"
-                  value={sheetIdInput}
-                  onChange={(e) => setSheetIdInput(e.target.value)}
-                  placeholder="e.g. 1aBcD3fGhIjK..."
-                  required
-                  className="w-full self-stretch py-2 pr-2 focus:outline-0"
-               />
-            </div>
+            {currentId === null ? (
+               <div className="my-2.25">
+                  <LoaderCircle className="animate-spin text-gray-600" />
+               </div>
+            ) : (
+               <div className="flex w-full max-w-130 items-center rounded-lg border border-gray-400">
+                  <span className="m-2">
+                     <Link size={18} />
+                  </span>
+                  <input
+                     spellCheck={false}
+                     type="text"
+                     name="sheetId"
+                     id="sheetId"
+                     value={sheetIdInput}
+                     onChange={(e) => setSheetIdInput(e.target.value)}
+                     placeholder="e.g. 1aBcD3fGhIjK..."
+                     required
+                     className="w-full self-stretch py-2 pr-2 focus:outline-0"
+                  />
+               </div>
+            )}
             {edited && (
-               <button className="bg-yellow-primary flex items-center rounded-lg px-4 py-2 text-sm font-medium shadow-sm">
+               <button
+                  inert={isPending}
+                  className={clsx(
+                     "flex items-center rounded-lg px-4 py-2 text-sm font-medium outline-0 focus-visible:outline",
+                     !isPending && "bg-yellow-primary shadow-sm",
+                  )}
+               >
                   {isPending ? (
-                     <LoaderCircle className="animate-spin" />
+                     <LoaderCircle className="animate-spin text-gray-600" />
                   ) : (
                      "Save"
                   )}

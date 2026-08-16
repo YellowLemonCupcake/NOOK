@@ -4,3 +4,5 @@ export const studentRecordsPage = "/student-records";
 export const scannerPage = "/scanner";
 export const configurationsPage = "/configs";
 export const settingsPage = "/settings";
+
+export const sheetIdRoute = "/api/sheetid";

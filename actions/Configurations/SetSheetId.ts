@@ -1,12 +1,10 @@
 "use server";
-import { configurationsPage } from "@/constants";
 import { auth } from "@/lib/auth";
 import { sheetsService } from "@/lib/googlesheetsapi";
 import { prisma } from "@/lib/prisma";
 import { GaxiosError } from "gaxios";
-import { revalidatePath } from "next/cache";
 
-type ReturnType =
+type ActionResult =
    | {
         success: false;
         error: string;
@@ -17,60 +15,61 @@ type ReturnType =
         id: string;
      };
 
-export default async function SetSheedIdAction(
+export default async function setSheetIdAction(
    id: string,
-): Promise<ReturnType> {
+): Promise<ActionResult> {
    const newSpreadsheetId = id.trim();
    if (!newSpreadsheetId) {
       return { success: false, error: "Please provide an id" };
    }
 
-   try {
-      const res = await sheetsService.spreadsheets.get({
-         spreadsheetId: newSpreadsheetId,
-      });
-      console.log(res);
+   const session = await auth();
+   if (!session?.user) {
+      return { success: false, error: "Not authenticated" };
+   }
 
-      const session = await auth();
-      if (!session?.user) {
-         return { success: false, error: "" };
-      }
-      await prisma.adminAccount.update({
-         where: { id: session?.user.id },
-         data: {
-            configuration: {
-               upsert: {
-                  create: { speadsheetId: newSpreadsheetId },
-                  update: { speadsheetId: newSpreadsheetId },
-               },
-            },
+   try {
+      // Test the sheet
+      const testRange = "A1";
+
+      const existing = await sheetsService.spreadsheets.values.get({
+         spreadsheetId: newSpreadsheetId,
+         range: testRange,
+      });
+      const originalValue = existing.data.values?.[0]?.[0] ?? "";
+
+      // Attempt the write
+      await sheetsService.spreadsheets.values.update({
+         spreadsheetId: newSpreadsheetId,
+         range: testRange,
+         valueInputOption: "RAW",
+         requestBody: { values: [[originalValue]] },
+      });
+
+      await prisma.configuration.upsert({
+         where: { adminAccountId: session.user.id },
+         update: { speadsheetId: newSpreadsheetId },
+         create: {
+            speadsheetId: newSpreadsheetId,
+            adminAccountId: session.user.id,
          },
       });
 
-      revalidatePath(configurationsPage);
       return {
          success: true,
          message: "Successfully set Sheet ID",
          id: newSpreadsheetId,
       };
    } catch (err) {
-      // Claude helped me here. I had no time reading documentations
       if (err instanceof GaxiosError) {
          const status = err.response?.status;
          const message = err.response?.data?.error?.message ?? err.message;
 
          switch (status) {
-            // case 400:
-            //    return { success: false, error: `Invalid request: ${message}` };
-            // case 401:
-            //    return {
-            //       success: false,
-            //       error: "Authentication failed — check service account credentials",
-            //    };
             case 403:
                return {
                   success: false,
-                  error: "Permission denied — make sure the sheet is shared with the service account email",
+                  error: "Permission denied — share the sheet with the service account email and grant it Editor access",
                };
             case 404:
                return {
@@ -90,7 +89,7 @@ export default async function SetSheedIdAction(
          }
       }
 
-      console.error("Unexpected error updating sheet:", err);
+      console.error("Unexpected error setting Sheet ID:", err);
       return { success: false, error: "Something went wrong" };
    }
 }
