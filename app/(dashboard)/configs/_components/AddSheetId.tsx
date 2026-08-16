@@ -64,7 +64,7 @@ export function AddSheetId({
                   <LoaderCircle className="animate-spin text-gray-600" />
                </div>
             ) : (
-               <div className="flex w-full max-w-130 items-center rounded-lg border border-gray-400">
+               <div className="flex w-full max-w-125 items-center rounded-lg border border-gray-400">
                   <span className="m-2">
                      <Link size={18} />
                   </span>

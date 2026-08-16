@@ -11,6 +11,7 @@
    "dependencies": {
       "@prisma/adapter-pg": "^7.9.1",
       "@prisma/client": "^7.9.1",
+      "@upstash/redis": "^1.38.2",
       "@yudiel/react-qr-scanner": "^2.6.0",
       "bcrypt": "^6.0.0",
       "clsx": "^2.1.1",
