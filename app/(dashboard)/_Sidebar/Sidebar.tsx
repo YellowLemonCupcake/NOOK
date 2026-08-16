@@ -52,7 +52,9 @@ function LogoutButton() {
    const handleLogout = async () => {
       if (isLoading) return;
       setIsLoading(true);
-      signOut({ callbackUrl: adminLoginPage });
+      await signOut({ redirect: false });
+      setIsLoading(false);
+      window.location.href = adminLoginPage;
    };
    return (
       <button
