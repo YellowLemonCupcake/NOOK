@@ -1,87 +1,178 @@
 "use client";
 import { Library } from "@/components/Images";
-import { Scanner } from "@yudiel/react-qr-scanner";
+import { IDetectedBarcode, Scanner } from "@yudiel/react-qr-scanner";
 import clsx from "clsx";
-import {
-   Barcode,
-   Book,
-   BookText,
-   Feather,
-   SendHorizonal,
-   UserRound,
-   type LucideProps,
-} from "lucide-react";
-import { useState } from "react";
+import { ChevronLeft } from "lucide-react";
+import { useRef, useState } from "react";
+import FinalizeDialog from "./_components/finalizeDialog";
 
-type Infos = {
-   borrowerId: string | null;
-   bookCode: string | null;
-   bookISBN: string | null;
-   bookTitle: string | null;
-   bookAuthor: string | null;
+export type BorrowData = {
+   borrowerId: string;
+   bookCode: string;
+   bookISBN: string;
+   bookTitle: string;
+   bookAuthor: string;
 };
 
-function Input({
-   label,
-   icon,
-   placeholder,
-}: {
+type Process = {
    label: string;
-   placeholder?: string;
-   icon: React.ForwardRefExoticComponent<
-      Omit<LucideProps, "ref"> & React.RefAttributes<SVGSVGElement>
-   >;
-}) {
-   return (
-      <div>
-         <p className="mb-1 flex items-center gap-1">
-            <span>{((prop) => <prop.icon size={18} />)({ icon })}</span>
-            {label}
-         </p>
-         <input
-            type="text"
-            className="bg-white-primary w-full rounded-md p-2 text-gray-700 outline-none"
-            disabled
-            placeholder={placeholder}
-         />
-      </div>
-   );
-}
+   description: string;
+   name: keyof BorrowData;
+   inputValue: string;
+   placeholder: string;
+   optional?: boolean;
+};
 
 export default function ScannerPage() {
-   const [infos, setInfos] = useState<Infos>({
-      borrowerId: null,
-      bookCode: null,
-      bookISBN: null,
-      bookTitle: null,
-      bookAuthor: null,
+   // States
+   const [infos, setInfos] = useState<BorrowData>({
+      borrowerId: "",
+      bookCode: "",
+      bookISBN: "",
+      bookTitle: "",
+      bookAuthor: "",
    });
+   const finalizeDialogRef = useRef<HTMLDialogElement>(null);
+
+   // Steps
+   const [step, setStep] = useState(0);
+   const processSteps: Process[] = [
+      {
+         label: "Student ID",
+         description:
+            "Nook automatically pulls matching student data into your Google Sheet. If no match for the Student ID is found, the row is still inserted with blank student fields, and a pending registration is created — once completed, those fields are filled in automatically.",
+         placeholder: "e.g. 241-04321",
+         name: "borrowerId",
+         inputValue: infos.borrowerId,
+      },
+      {
+         label: "Book Barcode",
+         description: "Scan the book's barcode, or enter it manually above.",
+         placeholder: "e.g. CSUL000...",
+         name: "bookCode",
+         inputValue: infos.bookCode,
+      },
+      {
+         label: "Book's ISBN",
+         description:
+            "Scan the book's ISBN to fetch its title and author automatically.",
+         placeholder: "ISBN",
+         name: "bookISBN",
+         inputValue: infos.bookISBN,
+         optional: true,
+      },
+   ];
+   const currentStep = processSteps[step];
+
+   // functions
+   const toggleFinalizeDialog = () => {
+      if (!finalizeDialogRef.current) return;
+      if (finalizeDialogRef.current.open) {
+         finalizeDialogRef.current.close();
+      } else {
+         finalizeDialogRef.current.showModal();
+      }
+   };
+   const nextStep = () => {
+      if (step === processSteps.length - 1) toggleFinalizeDialog();
+      if (currentStep.inputValue || currentStep.optional)
+         setStep((prev) => (prev + 1 < processSteps.length ? prev + 1 : prev));
+   };
+   const prevStep = () => setStep((prev) => (prev - 1 >= 0 ? prev - 1 : prev));
 
    return (
       <div className="relative min-h-[calc(100dvh-85px)] bg-[#003300]/90 p-7 select-none">
          <Library className="absolute inset-0 -z-10 size-full object-cover" />
 
-         <div className="flex flex-wrap items-stretch justify-center gap-x-8 gap-y-4">
-            <Scanner
-               onScan={() => {}}
-               classNames={{
-                  container: clsx(
-                     "max-w-100 rounded-2xl border-2 border-green-primary ",
-                  ),
+         {/* Scanner */}
+         <div className="mx-auto max-w-100">
+            <div className="relative">
+               <Scanner
+                  onScan={([detectedCode]) =>
+                     setInfos((prev) => {
+                        const newState = { ...prev };
+                        newState[currentStep.name] = detectedCode.rawValue;
+                        return newState;
+                     })
+                  }
+                  allowMultiple
+                  scanDelay={1000}
+                  classNames={{
+                     container: clsx(
+                        "rounded-2xl border-2 w-full border-green-primary bg-white-primary/10",
+                     ),
+                  }}
+               />
+               <p className="text-white-primary font-inter bg-green-primary absolute inset-x-0 bottom-0 mx-auto w-fit translate-y-1/2 rounded-md px-3 py-2 font-semibold tracking-wide">
+                  {currentStep.label}
+               </p>
+            </div>
+
+            {/* Input */}
+            <form
+               onSubmit={(e) => {
+                  e.preventDefault();
+                  nextStep();
                }}
-            />
-            <form className="text-white-primary font-inter flex w-full max-w-100 flex-col font-medium">
-               <div className="space-y-3">
-                  <Input icon={UserRound} label="ID-Number" />
-                  <Input icon={Barcode} label="Book Code" />
-                  <p className="text-sm font-medium"></p>
-                  <Input icon={Barcode} label="ISBN" />
-               </div>
-               {/* <button className="bg-yellow-primary font-roboto mt-4 flex h-10 w-full items-center justify-center gap-2 rounded-md p-2 font-semibold tracking-wide text-gray-700 shadow-sm">
-                  Submit
-               </button> */}
+            >
+               <input
+                  type="text"
+                  spellCheck={false}
+                  autoComplete="off"
+                  value={currentStep.inputValue ?? ""}
+                  onChange={(e) =>
+                     setInfos((prev) => {
+                        const newState = { ...prev };
+                        newState[currentStep.name] = e.target.value;
+                        return newState;
+                     })
+                  }
+                  placeholder={currentStep.placeholder}
+                  className="bg-green-primary/50 w-50% font-inter border-green-primary text-white-primary mt-10 w-full rounded-md border-2 p-1.5 text-center font-medium outline-none"
+               />
+               <p className="font-inter my-4 text-center text-sm text-white/80">
+                  {currentStep.description}
+               </p>
             </form>
+            <div className="flex justify-between gap-2">
+               {step > 0 && (
+                  <button
+                     className="bg-yellow-primary font-inter flex items-center justify-center rounded-md px-3 py-2 font-semibold"
+                     onClick={prevStep}
+                  >
+                     <ChevronLeft />
+                  </button>
+               )}
+
+               {step + 1 < processSteps.length ? (
+                  <button
+                     className={clsx(
+                        "bg-yellow-primary font-inter w-full gap-2 rounded-md px-3 py-2 font-semibold",
+                        !currentStep.inputValue &&
+                           !currentStep.optional &&
+                           "pointer-events-none opacity-50",
+                     )}
+                     onClick={nextStep}
+                  >
+                     Continue
+                  </button>
+               ) : (
+                  <button
+                     className={clsx(
+                        "bg-yellow-primary font-inter w-full gap-2 rounded-md px-3 py-2 font-semibold",
+                     )}
+                     onClick={toggleFinalizeDialog}
+                  >
+                     Finalize
+                  </button>
+               )}
+            </div>
          </div>
+         <FinalizeDialog
+            infos={infos}
+            ref={finalizeDialogRef}
+            toggle={toggleFinalizeDialog}
+         />
       </div>
    );
 }

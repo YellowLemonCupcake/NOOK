@@ -50,27 +50,34 @@ model Borrower {
 
   borrowLogs BorrowLog[]
 
-  programId String
+  programId Int
   program   Program @relation(fields: [programId], references: [id])
 
-  collegeId String
+  collegeId Int
   college   College @relation(fields: [collegeId], references: [id])
 }
 
+model PendingRegistration {
+  id Int @id @default(autoincrement())
+
+  studentId String
+  tableRanges String[] // List of sheet range where inputs for student infos are temporarily emptied
+}
+
 model Program {
-  id String @id @default(cuid())
+  id Int @id @default(autoincrement())
 
   programName String
   programAbbreviation String
 
   borrowers Borrower[]
 
-  collegeId String     @unique
+  collegeId Int     @unique
   college   College @relation(fields: [collegeId], references: [id])
 }
 
 model College {
-  id String @id @default(cuid())
+  id Int @id @default(autoincrement())
 
   borrowers Borrower[]
 
