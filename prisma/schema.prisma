@@ -68,11 +68,11 @@ model Program {
   id Int @id @default(autoincrement())
 
   programName String
-  programAbbreviation String
+  programAbbreviation String @unique
 
   borrowers Borrower[]
 
-  collegeId Int     @unique
+  collegeId Int     
   college   College @relation(fields: [collegeId], references: [id])
 }
 
@@ -82,6 +82,6 @@ model College {
   borrowers Borrower[]
 
   collegeName String
-  collegeAbbreviation String
+  collegeAbbreviation String @unique
   programs       Program[]
 }
