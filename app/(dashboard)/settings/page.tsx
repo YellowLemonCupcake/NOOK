@@ -1,4 +1,4 @@
-import { Building, UserShield } from "lucide-react";
+import { Building, LoaderCircle, UserShield } from "lucide-react";
 import ChangeEmail from "./_components/ChangeEmail";
 import ChangePassword from "./_components/ChangePassword";
 import AddCollege from "./_components/AddCollege";
@@ -40,7 +40,16 @@ export default async function SettingsPage() {
                <span className="truncate">Colleges & Programs</span>
             </p>
             <AddCollege />
-            <Suspense fallback={"Loading..."}>
+            <Suspense
+               fallback={
+                  <p className="font-inter text-white-primary/90 flex items-center justify-center gap-2 text-sm font-medium">
+                     <span>
+                        <LoaderCircle className="animate-spin" size={15} />
+                     </span>
+                     <span className="truncate">Loading</span>
+                  </p>
+               }
+            >
                <Colleges />
             </Suspense>
          </div>
