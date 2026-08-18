@@ -21,24 +21,31 @@ export function AddSheetId({
       if (isPending || !edited) return;
 
       const res = await setSheetIdAction(sheetIdInput);
-      if (res.success) {
-         toast.success(res.message);
-         setSheetIdInput(res.id);
-         setCurrentId(res.id);
-      } else toast.error(res.error);
+      if (res.ok) {
+         toast.success("Successfully set Sheet ID");
+         setSheetIdInput(res.data.id);
+         setCurrentId(res.data.id);
+      } else toast.error(res.message);
    }, null);
 
    useEffect(() => {
       (async () => {
-         const res = await fetch(sheetIdRoute);
-         const data: { status: "error" } | { status: "success"; id: string } =
-            await res.json();
-         if (data.status === "error") {
-            setCurrentId("Something went wrong. Please contact the dev.");
-            setSheetIdInput("Something went wrong. Please contact the dev.");
-         } else {
-            setCurrentId(data.id);
-            setSheetIdInput(data.id);
+         try {
+            const res = await fetch(sheetIdRoute);
+            const data:
+               { status: "error" } | { status: "success"; id: string } =
+               await res.json();
+            if (data.status === "error") {
+               setCurrentId("Something went wrong. Please try again later.");
+               setSheetIdInput("Something went wrong. Please try again later.");
+            } else {
+               setCurrentId(data.id);
+               setSheetIdInput(data.id);
+            }
+         } catch (e) {
+            console.error(e);
+            setCurrentId("Something went wrong. Please try again later.");
+            setSheetIdInput("Something went wrong. Please try again later.");
          }
       })();
    }, []);

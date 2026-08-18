@@ -4,21 +4,23 @@ import { Prisma } from "@/generated/prisma/client";
 import { auth } from "@/lib/auth";
 import { compareData, hashData } from "@/lib/bcrypt";
 import { prisma } from "@/lib/prisma";
+import { Result } from "@/lib/types";
 
-export default async function ChangePasswordAction(
+export default async function changePasswordAction(
    oldPassword: string,
    newPassword: string,
-): Promise<{ status: "error"; message: string } | { status: "success" }> {
+): Promise<Result<{ message: string }>> {
    if (newPassword.length < 8 || oldPassword.length < 8)
       return {
-         status: "error",
+         ok: false,
+         error: "VALIDATION",
          message: "Password must be at least 8 characters long",
       };
 
    try {
       const session = await auth();
       if (!session?.user?.id)
-         return { status: "error", message: "Unauthorized" };
+         return { ok: false, error: "AUTH", message: "Unauthorized" };
 
       const data = await prisma.adminAccount.findUnique({
          where: { id: session.user.id },
@@ -26,11 +28,16 @@ export default async function ChangePasswordAction(
       });
 
       if (!data?.password || !(await compareData(oldPassword, data?.password)))
-         return { status: "error", message: "Current password is incorrect" };
+         return {
+            ok: false,
+            error: "AUTH",
+            message: "Incorrect current password.",
+         };
 
       if (oldPassword === newPassword)
          return {
-            status: "error",
+            ok: false,
+            error: "VALIDATION",
             message:
                "New password must be different from your current password",
          };
@@ -40,14 +47,18 @@ export default async function ChangePasswordAction(
          data: { password: await hashData(newPassword) },
       });
 
-      return { status: "success" };
+      return { ok: true, data: { message: "Password changed successfully" } };
    } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
          if (e.code === "P2025") {
-            return { status: "error", message: "Account not found" };
+            return {
+               ok: false,
+               error: "NOT_FOUND",
+               message: "Account not found",
+            };
          }
       }
       console.error(e);
-      return { status: "error", message: "Unknown Error" };
+      return { ok: false, error: "OTHER", message: "Unknown Error" };
    }
 }

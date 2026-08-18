@@ -9,11 +9,11 @@ export default function AddCollege() {
       const college = ((formData.get("college") ?? "") as string).toUpperCase();
       const res = await addCollege(college);
 
-      if (!res.success) {
-         toast.error(res.error);
+      if (!res.ok) {
+         toast.error(res.message);
          return college;
       } else {
-         toast.success(`Created ${res.college} college`);
+         toast.success(`Created ${res.data.newCollege} college`);
          return "";
       }
    };

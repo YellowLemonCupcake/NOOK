@@ -1,6 +1,6 @@
 "use client";
 
-import ChangePasswordAction from "@/actions/AdminSettings/ChangePassword";
+import changePasswordAction from "@/actions/AdminSettings/ChangePassword";
 import clsx from "clsx";
 import { Eye, EyeClosed, SquarePen } from "lucide-react";
 import Image from "next/image";
@@ -95,8 +95,8 @@ export default function ChangePassword() {
          return;
       }
 
-      const res = await ChangePasswordAction(password.current, password.new);
-      if (res.status === "error") {
+      const res = await changePasswordAction(password.current, password.new);
+      if (!res.ok) {
          toast.error(res.message);
          return;
       }

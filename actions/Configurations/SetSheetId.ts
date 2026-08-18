@@ -2,30 +2,24 @@
 import { auth } from "@/lib/auth";
 import { sheetsService } from "@/lib/googlesheetsapi";
 import { prisma } from "@/lib/prisma";
+import { Result } from "@/lib/types";
 import { GaxiosError } from "gaxios";
-
-type ActionResult =
-   | {
-        success: false;
-        error: string;
-     }
-   | {
-        success: true;
-        message: string;
-        id: string;
-     };
 
 export default async function setSheetIdAction(
    id: string,
-): Promise<ActionResult> {
+): Promise<Result<{ id: string }>> {
    const newSpreadsheetId = id.trim();
    if (!newSpreadsheetId) {
-      return { success: false, error: "Please provide an id" };
+      return {
+         ok: false,
+         error: "VALIDATION",
+         message: "Please provide an id",
+      };
    }
 
    const session = await auth();
    if (!session?.user) {
-      return { success: false, error: "Not authenticated" };
+      return { ok: false, error: "AUTH", message: "Not authenticated" };
    }
 
    try {
@@ -56,9 +50,10 @@ export default async function setSheetIdAction(
       });
 
       return {
-         success: true,
-         message: "Successfully set Sheet ID",
-         id: newSpreadsheetId,
+         ok: true,
+         data: {
+            id: newSpreadsheetId,
+         },
       };
    } catch (err) {
       if (err instanceof GaxiosError) {
@@ -68,28 +63,33 @@ export default async function setSheetIdAction(
          switch (status) {
             case 403:
                return {
-                  success: false,
-                  error: "Permission denied — share the sheet with the service account email and grant it Editor access",
+                  ok: false,
+                  error: "FORBIDDEN",
+                  message:
+                     "Permission denied — share the sheet with the service account email and grant it Editor access",
                };
             case 404:
                return {
-                  success: false,
-                  error: "Sheet not found — check the Sheet ID",
+                  ok: false,
+                  error: "NOT_FOUND",
+                  message: "Sheet not found — check the Sheet ID",
                };
             case 429:
                return {
-                  success: false,
-                  error: "Rate limit exceeded — try again shortly",
+                  ok: false,
+                  error: "RATE_LIMITED",
+                  message: "Rate limit exceeded — try again shortly",
                };
             default:
                return {
-                  success: false,
-                  error: `Google Sheets API error: ${message}`,
+                  ok: false,
+                  error: "OTHER",
+                  message: `Google Sheets API error: ${message}`,
                };
          }
       }
 
       console.error("Unexpected error setting Sheet ID:", err);
-      return { success: false, error: "Something went wrong" };
+      return { ok: false, error: "OTHER", message: "Something went wrong" };
    }
 }

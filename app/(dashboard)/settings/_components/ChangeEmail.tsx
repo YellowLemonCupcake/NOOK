@@ -1,6 +1,6 @@
 "use client";
 
-import ChangeEmailAction from "@/actions/AdminSettings/ChangeEmail";
+import changeEmailAction from "@/actions/AdminSettings/ChangeEmail";
 import { LoaderCircle, SquarePen } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
@@ -15,9 +15,9 @@ export default function ChangeEmail() {
       if (!edited || isPending) return;
       const email = (formData.get("email") ?? "") as string;
       if (!email) return;
-      const res = await ChangeEmailAction(email);
-      if (res.status === "success") {
-         await update({ email: res.newEmail });
+      const res = await changeEmailAction(email);
+      if (res.ok) {
+         await update({ email: res.data.newEmail });
          toast.success("Email updated");
       } else {
          toast.error(res.message);

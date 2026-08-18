@@ -15,11 +15,11 @@ function AddProgram({ collegeId }: { collegeId: number }) {
    const onAction = async (_: string, formData: FormData) => {
       const program = ((formData.get("program") ?? "") as string).toUpperCase();
       const res = await addProgram(collegeId, program);
-      if (res.success) {
-         toast.success(`Created ${res.program} program`);
+      if (res.ok) {
+         toast.success(`Created ${res.data.newProgram} program`);
          return "";
       }
-      toast.error(res.error);
+      toast.error(res.message);
       return program;
    };
    const [input, formAction, isPending] = useActionState(onAction, "");
@@ -57,7 +57,7 @@ function Program({ name, id }: { name: string; id: number }) {
       setIsDeleting(true);
       const loadingToast = toast.loading(`Deleting ${name}`);
       const res = await removeProgram(id);
-      if (res.success) {
+      if (res.ok) {
          toast.update(loadingToast, {
             type: "success",
             render: `Deleted ${name}`,
@@ -67,7 +67,7 @@ function Program({ name, id }: { name: string; id: number }) {
       } else {
          toast.update(loadingToast, {
             type: "error",
-            render: res.error,
+            render: res.message,
             isLoading: false,
             autoClose: 3000,
          });
@@ -79,10 +79,10 @@ function Program({ name, id }: { name: string; id: number }) {
       const newName = ((formData.get("name") ?? "") as string).toUpperCase();
       if (isPending || newName === name) return newName;
       const res = await renameProgram(id, newName);
-      if (res.success) {
-         toast.success(`Program renamed to ${res.newName}`);
+      if (res.ok) {
+         toast.success(`Program renamed to ${res.data.newName}`);
          setRenaming(false);
-      } else toast.error(res.error);
+      } else toast.error(res.message);
       return newName;
    };
    const [currentName, renameAction, isPending] = useActionState(
@@ -161,7 +161,7 @@ export default function College({
       setisDeleting(true);
       const loadingToast = toast.loading(`Deleting ${name}`);
       const res = await removeCollege(id);
-      if (res.success) {
+      if (res.ok) {
          toast.update(loadingToast, {
             isLoading: false,
             render: `Deleted ${name}`,
@@ -171,7 +171,7 @@ export default function College({
       } else {
          toast.update(loadingToast, {
             isLoading: false,
-            render: res.error,
+            render: res.message,
             type: "error",
             autoClose: 3000,
          });
