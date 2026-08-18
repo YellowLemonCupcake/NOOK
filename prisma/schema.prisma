@@ -61,7 +61,7 @@ model PendingRegistration {
   id Int @id @default(autoincrement())
 
   studentId String
-  tableRanges String[] // List of sheet range where inputs for student infos are temporarily emptied
+  tableRanges String[] // List of sheet range where inputs for student infos are temporarily emptied.
 }
 
 model Program {
