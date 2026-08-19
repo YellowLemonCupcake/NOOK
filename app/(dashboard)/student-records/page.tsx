@@ -1,5 +1,6 @@
 import { Prisma } from "@/generated/prisma/client";
 import { Edit, Trash2 } from "lucide-react";
+import AddRecord from "./_components/AddRecord";
 
 function StudentRow({
    number,
@@ -34,10 +35,10 @@ function StudentRow({
 
 export default function StudentRecordsPage() {
    return (
-      <div className="p-5">
+      <div className="min-w-150 p-5">
          <table className="font-inter w-full border-separate border-spacing-0">
             <thead className="bg-[#E8F5E9] text-sm font-bold select-none">
-               <tr className="">
+               <tr className="text-black/70">
                   <th className="border-b-green-primary rounded-tl-xl border-b pl-2">
                      No.
                   </th>
@@ -62,6 +63,7 @@ export default function StudentRecordsPage() {
             </thead>
             <tbody className="text-sm text-gray-600"></tbody>
          </table>
+         <AddRecord />
       </div>
    );
 }

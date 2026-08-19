@@ -18,7 +18,7 @@ model AdminAccount {
 }
 
 model Configuration {
-  id String @id @default(cuid())
+  id           String @id @default(cuid())
   speadsheetId String
 
   adminAccountId String       @unique
@@ -37,6 +37,7 @@ model BorrowLog {
 
   borrowerId String
   borrower   Borrower @relation(fields: [borrowerId], references: [id])
+
   @@index([date])
   @@index([borrowerId, date])
 }
@@ -44,44 +45,42 @@ model BorrowLog {
 model Borrower {
   id String @id @default(cuid())
 
-  idNumber  String @unique
-  name      String
-  yearLevel Int
+  idNumber      String  @unique
+  firstName     String
+  lastName      String
+  middleInitial String?
+  suffix        String?
+  yearLevel     Int
 
   borrowLogs BorrowLog[]
 
   programId Int
   program   Program @relation(fields: [programId], references: [id])
-
-  collegeId Int
-  college   College @relation(fields: [collegeId], references: [id])
 }
 
 model PendingRegistration {
   id Int @id @default(autoincrement())
 
-  studentId String
-  tableRanges String[] // List of sheet range where inputs for student infos are temporarily emptied.
+  studentId   String
+  tableRanges String[] // List of sheet range where inputs for student infos were temporarily emptied.
 }
 
 model Program {
   id Int @id @default(autoincrement())
 
-  programName String
+  programName         String
   programAbbreviation String @unique
 
   borrowers Borrower[]
 
-  collegeId Int     
+  collegeId Int
   college   College @relation(fields: [collegeId], references: [id])
 }
 
 model College {
   id Int @id @default(autoincrement())
 
-  borrowers Borrower[]
-
-  collegeName String
-  collegeAbbreviation String @unique
-  programs       Program[]
+  collegeName         String
+  collegeAbbreviation String    @unique
+  programs            Program[]
 }

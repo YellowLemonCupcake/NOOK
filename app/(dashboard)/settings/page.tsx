@@ -31,6 +31,7 @@ export default async function SettingsPage() {
                Account
             </p>
             <ChangeEmail />
+            <small className="text-white/80">(Not Final)</small>
             <ChangePassword />
 
             <p className="font-inter mt-10 mb-4 flex items-center gap-2 text-2xl font-semibold text-white">

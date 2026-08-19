@@ -5,7 +5,18 @@ import { prisma } from "@/lib/prisma";
 import type { Result } from "@/lib/types";
 
 export async function getStudentRecords(): Promise<
-   Result<BorrowerGetPayload<{ include: { college: true; program: true } }>[]>
+   Result<
+      BorrowerGetPayload<{
+         include: {
+            program: {
+               select: {
+                  programAbbreviation: true;
+                  college: { select: { collegeAbbreviation: true } };
+               };
+            };
+         };
+      }>[]
+   >
 > {
    const session = await auth();
    if (!session?.user) {
@@ -14,7 +25,14 @@ export async function getStudentRecords(): Promise<
 
    try {
       const records = await prisma.borrower.findMany({
-         include: { college: true, program: true },
+         include: {
+            program: {
+               select: {
+                  programAbbreviation: true,
+                  college: { select: { collegeAbbreviation: true } },
+               },
+            },
+         },
       });
       return { ok: true, data: records };
    } catch (e) {

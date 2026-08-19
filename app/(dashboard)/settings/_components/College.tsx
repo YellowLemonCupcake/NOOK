@@ -7,16 +7,18 @@ import {
    renameProgram,
 } from "@/actions/AdminSettings/Program";
 import clsx from "clsx";
-import { Check, LoaderCircle, Pencil, Trash2, X } from "lucide-react";
+import { Check, LoaderCircle, Pencil, Plus, Trash2, X } from "lucide-react";
 import { useActionState, useState } from "react";
 import { toast } from "react-toastify";
 
 function AddProgram({ collegeId }: { collegeId: number }) {
+   const [adding, setAdding] = useState(false);
    const onAction = async (_: string, formData: FormData) => {
       const program = ((formData.get("program") ?? "") as string).toUpperCase();
       const res = await addProgram(collegeId, program);
       if (res.ok) {
          toast.success(`Created ${res.data.newProgram} program`);
+         setAdding(false);
          return "";
       }
       toast.error(res.message);
@@ -25,26 +27,47 @@ function AddProgram({ collegeId }: { collegeId: number }) {
    const [input, formAction, isPending] = useActionState(onAction, "");
 
    return (
-      <form action={formAction} className="flex gap-2">
-         <input
-            type="text"
-            name="program"
-            className="font-inter w-full rounded-md border border-white/70 px-2 py-1 font-medium text-white uppercase outline-none"
-            required
-            defaultValue={input}
-            placeholder="ADD PROGRAM"
-            autoComplete="off"
-         />
-         {isPending ? (
-            <span className="flex items-center p-2">
-               <LoaderCircle className="animate-spin text-white" size={20} />
-            </span>
+      <div
+         className={clsx(
+            "flex min-w-0 items-center gap-2 rounded-md bg-black/15 px-2 py-2 text-sm font-semibold text-white shadow-sm",
+            adding
+               ? "mt-2 w-full"
+               : "focus-within:bg-yellow-primary focus-within:text-black",
+         )}
+      >
+         {adding ? (
+            <form action={formAction} className="flex w-full gap-2">
+               <input
+                  type="text"
+                  name="program"
+                  className="font-inter w-full rounded-md font-medium text-white uppercase outline-none"
+                  required
+                  defaultValue={input}
+                  placeholder="Program"
+                  autoComplete="off"
+                  autoFocus
+               />
+               {!isPending ? (
+                  <>
+                     <button>
+                        <Check type="submit" size={15} />
+                     </button>
+                     <button type="button" onClick={() => setAdding(false)}>
+                        <X size={15} />
+                     </button>
+                  </>
+               ) : (
+                  <span>
+                     <LoaderCircle size={15} className="animate-spin" />
+                  </span>
+               )}
+            </form>
          ) : (
-            <button className="bg-yellow-primary font-roboto rounded-md px-4 py-2 text-sm font-medium text-black shadow-sm">
-               <span>Add</span>
+            <button onClick={() => setAdding(true)} className="outline-none">
+               <Plus size={20} />
             </button>
          )}
-      </form>
+      </div>
    );
 }
 
@@ -92,7 +115,7 @@ function Program({ name, id }: { name: string; id: number }) {
    return (
       <div
          className={clsx(
-            "flex min-w-0 items-center gap-2 rounded-md bg-black/30 px-2 py-2 text-sm font-semibold text-white shadow-sm",
+            "flex min-w-0 items-center gap-2 rounded-md bg-black/15 px-2 py-2 text-sm font-semibold text-white shadow-sm",
             renaming && "w-full",
          )}
       >
@@ -189,12 +212,12 @@ export default function College({
          <p className="font-inter mb-2 font-bold tracking-wider text-white">
             {name}
          </p>
-         <div className="mb-3 flex flex-wrap gap-1">
+         <div className="flex flex-wrap gap-1.5">
             {programs.map((p) => (
                <Program key={p.id} id={p.id} name={p.programAbbreviation} />
             ))}
+            <AddProgram collegeId={id} />
          </div>
-         <AddProgram collegeId={id} />
       </div>
    );
 }
