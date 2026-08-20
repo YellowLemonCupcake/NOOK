@@ -1,3 +1,5 @@
+import { BorrowerGetPayload } from "@/generated/prisma/models";
+
 export type Result<T> =
    | {
         ok: true;
@@ -16,3 +18,14 @@ export type Result<T> =
            | "OTHER"; // catch-all for unexpected errors
         message: string;
      };
+
+export type BorrowerRecord = BorrowerGetPayload<{
+   include: {
+      program: {
+         select: {
+            programAbbreviation: true;
+            college: { select: { collegeAbbreviation: true } };
+         };
+      };
+   };
+}>;

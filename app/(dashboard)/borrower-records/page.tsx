@@ -1,24 +1,24 @@
-import { Prisma } from "@/generated/prisma/client";
 import { Edit, Trash2 } from "lucide-react";
 import AddRecord from "./_components/AddRecord";
+import { BorrowerRecord } from "@/lib/types";
 
-function StudentRow({
+function BorrowerRow({
    number,
    borrowerRecord,
 }: {
    number: number;
-   borrowerRecord: Prisma.BorrowerGetPayload<{
-      include: { college: true; program: true };
-   }>;
+   borrowerRecord: BorrowerRecord;
 }) {
    return (
       <tr className="text-center">
          <td className="py-2">{number}</td>
          <td className="py-2">{borrowerRecord.idNumber}</td>
          <td className="py-2">{borrowerRecord.name}</td>
-         <td className="py-2">{borrowerRecord.program.programName}</td>
+         <td className="py-2">{borrowerRecord.program.programAbbreviation}</td>
          <td className="py-2">{borrowerRecord.yearLevel}</td>
-         <td className="py-2">{borrowerRecord.college.collegeAbbreviation}</td>
+         <td className="py-2">
+            {borrowerRecord.program.college.collegeAbbreviation}
+         </td>
          <td className="py-2">
             <button>
                <Edit size={18} />

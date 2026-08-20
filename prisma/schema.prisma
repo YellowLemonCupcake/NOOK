@@ -46,10 +46,7 @@ model Borrower {
   id String @id @default(cuid())
 
   idNumber      String  @unique
-  firstName     String
-  lastName      String
-  middleInitial String?
-  suffix        String?
+  name     String
   yearLevel     Int
 
   borrowLogs BorrowLog[]

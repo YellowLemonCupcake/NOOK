@@ -26,7 +26,7 @@ import {
    logsPage,
    scannerPage,
    settingsPage,
-   studentRecordsPage,
+   borrowerRecordsPage,
 } from "@/constants";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -35,13 +35,13 @@ import { signOut } from "next-auth/react";
 const links = [
    { label: "Borrow Logs", route: logsPage, icon: NotepadText },
    { label: "Scanner", route: scannerPage, icon: ScanLine },
-   { label: "Student Records", route: studentRecordsPage, icon: UserRound },
+   { label: "Student Records", route: borrowerRecordsPage, icon: UserRound },
    { label: "Configurations", route: configurationsPage, icon: Wrench },
 ];
 
 const routeLabels = [
    [logsPage, "Borrow Logs"],
-   [studentRecordsPage, "Student Records"],
+   [borrowerRecordsPage, "Student Records"],
    [scannerPage, "Scanner"],
    [configurationsPage, "Configurations"],
    [settingsPage, "Settings"],

@@ -1,23 +1,9 @@
 import { Prisma } from "@/generated/prisma/client";
-import { BorrowerGetPayload } from "@/generated/prisma/models";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import type { Result } from "@/lib/types";
+import type { Result, BorrowerRecord } from "@/lib/types";
 
-export async function getStudentRecords(): Promise<
-   Result<
-      BorrowerGetPayload<{
-         include: {
-            program: {
-               select: {
-                  programAbbreviation: true;
-                  college: { select: { collegeAbbreviation: true } };
-               };
-            };
-         };
-      }>[]
-   >
-> {
+export async function getStudentRecords(): Promise<Result<BorrowerRecord[]>> {
    const session = await auth();
    if (!session?.user) {
       return { ok: false, error: "AUTH", message: "Unauthorized" };

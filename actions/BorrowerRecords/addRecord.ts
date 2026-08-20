@@ -1,6 +1,6 @@
 "use server";
 
-import { studentRecordsPage } from "@/constants";
+import { borrowerRecordsPage } from "@/constants";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { Result } from "@/lib/types";
@@ -9,12 +9,9 @@ import { revalidatePath } from "next/cache";
 
 export default async function addRecord(
    idNumber: string,
-   firstName: string,
-   lastName: string,
-   middleInitial: string,
+   name: string,
    yearLevel: number,
    programId: number,
-   suffix?: string,
 ): Promise<Result<{ message: string }>> {
    const session = await auth();
    if (!session?.user)
@@ -24,17 +21,14 @@ export default async function addRecord(
       const newRecord = await prisma.borrower.create({
          data: {
             idNumber,
-            firstName,
-            lastName,
-            middleInitial,
-            suffix,
+            name,
             yearLevel,
             programId,
          },
          select: { idNumber: true },
       });
 
-      revalidatePath(studentRecordsPage);
+      revalidatePath(borrowerRecordsPage);
       return { ok: true, data: { message: `Created ${newRecord.idNumber}` } };
    } catch (e) {
       if (e instanceof PrismaClientKnownRequestError) {

@@ -6,12 +6,12 @@ import {
    logsPage,
    scannerPage,
    settingsPage,
-   studentRecordsPage,
+   borrowerRecordsPage,
 } from "./constants";
 
 const protectedRoutes = [
    logsPage,
-   studentRecordsPage,
+   borrowerRecordsPage,
    scannerPage,
    configurationsPage,
    settingsPage,
