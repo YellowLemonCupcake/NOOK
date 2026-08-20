@@ -1,27 +1,41 @@
 "use client";
 
-import { LoaderCircle, Plus, X } from "lucide-react";
+import { LoaderCircle, Plus } from "lucide-react";
 import React, { useActionState, useRef, useState } from "react";
 import { useSidebar } from "../../_Sidebar/SidebarContextProvider";
 import clsx from "clsx";
-import { ProgramDropdown } from "./ProgramDropdown";
-import { CollegeDropdown } from "./CollegeDropdown";
+import ProgramDropdown from "./ProgramDropdown";
+import CollegeDropdown from "./CollegeDropdown";
 import addRecord from "@/actions/BorrowerRecords/addRecord";
 import { toast } from "react-toastify";
+import { useChangeDialogRef, useDialogRef } from "./DialogProvider";
 
 export default function AddRecord() {
-   const dialogRef = useRef<HTMLDialogElement>(null);
    const { desktop } = useSidebar();
    const [key, setKey] = useState("");
 
+   const addRecordDialogRef = useRef<HTMLDialogElement>(null);
+   const dialog = useDialogRef();
+   const changeDialog = useChangeDialogRef();
+
    const toggleDialog = (state?: boolean) => {
-      if (dialogRef.current) {
+      if (addRecordDialogRef.current) {
          if (state === undefined) {
-            if (dialogRef.current.open) dialogRef.current.close();
-            else dialogRef.current.show();
+            if (addRecordDialogRef.current.open) {
+               addRecordDialogRef.current.close();
+            } else {
+               dialog.current?.close();
+               changeDialog(addRecordDialogRef);
+               addRecordDialogRef.current.show();
+            }
          } else {
-            if (state) dialogRef.current.show();
-            else dialogRef.current.close();
+            if (state) {
+               dialog.current?.close();
+               changeDialog(addRecordDialogRef);
+               addRecordDialogRef.current.show();
+            } else {
+               addRecordDialogRef.current.close();
+            }
          }
       }
    };
@@ -62,7 +76,7 @@ export default function AddRecord() {
    return (
       <>
          <dialog
-            ref={dialogRef}
+            ref={addRecordDialogRef}
             className={clsx(
                "bg-white-primary fixed inset-y-0 m-auto w-[calc(100%-12px)] max-w-125 rounded-xl shadow-md transition-[left] select-none backdrop:bg-transparent",
                desktop && "md:left-81",

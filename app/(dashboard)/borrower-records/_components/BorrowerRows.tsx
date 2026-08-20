@@ -31,3 +31,7 @@ function BorrowerRow({
       </tr>
    );
 }
+
+export default function BorrowerRecords() {
+   return <></>;
+}

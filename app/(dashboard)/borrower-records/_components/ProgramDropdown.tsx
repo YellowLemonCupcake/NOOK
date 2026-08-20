@@ -26,7 +26,7 @@ type ProgramInfo = {
    shorthand: string;
 };
 
-export function ProgramDropdown() {
+export default function ProgramDropdown() {
    const [programs, setPrograms] = useState<ProgramInfo[]>([]);
 
    useEffect(() => {

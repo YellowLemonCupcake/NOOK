@@ -50,7 +50,7 @@ const colleges = [
    },
 ];
 
-export function CollegeDropdown() {
+export default function CollegeDropdown() {
    return (
       <div>
          <p className="mb-1 block text-xs text-gray-600">College</p>
