@@ -20,6 +20,13 @@ async function getOfferedPrograms() {
 
    const { data } = await axios.get(
       "https://myadmission.carsu.edu.ph/api/enrollment/admission/public/offeredprogram-list/undergrad",
+      {
+         headers: {
+            Accept: "application/json",
+            "User-Agent": "nook-programs-api/1.0",
+         },
+         timeout: 10_000,
+      },
    );
    return data.data;
 }
