@@ -11,7 +11,8 @@ export default async function addRecord(
    idNumber: string,
    name: string,
    yearLevel: number,
-   programId: number,
+   program: string,
+   college: string,
 ): Promise<Result<{ message: string }>> {
    const session = await auth();
    if (!session?.user)
@@ -23,7 +24,8 @@ export default async function addRecord(
             idNumber,
             name,
             yearLevel,
-            programId,
+            program,
+            college,
          },
          select: { idNumber: true },
       });

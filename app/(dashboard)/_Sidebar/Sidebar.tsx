@@ -178,6 +178,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
             className={clsx(
                "min-h-screen pt-15 pb-6.25 transition-[padding]",
                sidebarSwitch.desktop && "md:pl-81",
+               sidebarSwitch.mobile && "overflow-hidden sm:overflow-auto",
             )}
          >
             {children}

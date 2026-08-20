@@ -1,6 +1,10 @@
 import { Edit, Trash2 } from "lucide-react";
 import AddRecord from "./_components/AddRecord";
 import { BorrowerRecord } from "@/lib/types";
+import { getBorrowerRecords } from "@/data-access-layer/BorrowerRecords";
+import { adminLoginPage } from "@/constants";
+import { redirect } from "next/navigation";
+import { Suspense } from "react";
 
 function BorrowerRow({
    number,
@@ -14,11 +18,9 @@ function BorrowerRow({
          <td className="py-2">{number}</td>
          <td className="py-2">{borrowerRecord.idNumber}</td>
          <td className="py-2">{borrowerRecord.name}</td>
-         <td className="py-2">{borrowerRecord.program.programAbbreviation}</td>
+         <td className="py-2">{borrowerRecord.program}</td>
          <td className="py-2">{borrowerRecord.yearLevel}</td>
-         <td className="py-2">
-            {borrowerRecord.program.college.collegeAbbreviation}
-         </td>
+         <td className="py-2">{borrowerRecord.college}</td>
          <td className="py-2">
             <button>
                <Edit size={18} />
@@ -32,10 +34,20 @@ function BorrowerRow({
       </tr>
    );
 }
-
-export default function StudentRecordsPage() {
+async function Suspended() {
+   const res = await getBorrowerRecords();
+   if (!res.ok) {
+      if (res.error === "AUTH") redirect(adminLoginPage);
+      else <></>;
+      return;
+   }
+   return res.data.map((record, i) => (
+      <BorrowerRow key={record.id} number={i + 1} borrowerRecord={record} />
+   ));
+}
+export default async function BorrowerRecordsPage() {
    return (
-      <div className="min-w-150 p-5">
+      <div className="min-w-150 p-3">
          <table className="font-inter w-full border-separate border-spacing-0">
             <thead className="bg-[#E8F5E9] text-sm font-bold select-none">
                <tr className="text-black/70">
@@ -61,7 +73,11 @@ export default function StudentRecordsPage() {
                   </th>
                </tr>
             </thead>
-            <tbody className="text-sm text-gray-600"></tbody>
+            <tbody className="text-sm text-gray-600">
+               <Suspense>
+                  <Suspended />
+               </Suspense>
+            </tbody>
          </table>
          <AddRecord />
       </div>

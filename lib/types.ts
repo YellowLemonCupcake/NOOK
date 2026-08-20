@@ -1,4 +1,4 @@
-import { BorrowerGetPayload } from "@/generated/prisma/models";
+import { BorrowerModel } from "@/generated/prisma/models";
 
 export type Result<T> =
    | {
@@ -19,13 +19,4 @@ export type Result<T> =
         message: string;
      };
 
-export type BorrowerRecord = BorrowerGetPayload<{
-   include: {
-      program: {
-         select: {
-            programAbbreviation: true;
-            college: { select: { collegeAbbreviation: true } };
-         };
-      };
-   };
-}>;
+export type BorrowerRecord = BorrowerModel;

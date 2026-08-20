@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
-import { Inter, Funnel_Sans, Roboto } from "next/font/google";
+import { Inter, Funnel_Sans, Roboto, Geist } from "next/font/google";
 import "./globals.css";
 import clsx from "clsx";
 import { AuthProvider } from "./providers";
 import { ToastContainer } from "react-toastify";
+import { cn } from "@/lib/utils";
+
+const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
 const funnelSans = Funnel_Sans({
    variable: "--font-funnel-sans",
@@ -28,11 +31,15 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
    return (
       <html
          lang="en"
-         className={clsx(
-            funnelSans.variable,
-            inter.variable,
-            roboto.variable,
-            "h-full antialiased",
+         className={cn(
+            clsx(
+               funnelSans.variable,
+               inter.variable,
+               roboto.variable,
+               "h-full antialiased",
+            ),
+            "font-sans",
+            geist.variable,
          )}
       >
          <body className="flex min-h-full flex-col">
@@ -40,7 +47,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
                position="bottom-right"
                closeButton={false}
                closeOnClick
-               toastClassName={"font-semibold"}
+               toastClassName={"font-semibold select-none"}
                pauseOnHover={false}
                autoClose={3000}
             />

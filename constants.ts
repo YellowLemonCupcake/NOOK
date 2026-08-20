@@ -6,3 +6,4 @@ export const configurationsPage = "/configs";
 export const settingsPage = "/settings";
 
 export const sheetIdRoute = "/api/sheetid";
+export const offeredProgramsRoute = "/api/programs";
