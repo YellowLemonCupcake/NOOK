@@ -1,6 +1,6 @@
 "use client";
 import { Library } from "@/components/Images";
-import { IDetectedBarcode, Scanner } from "@yudiel/react-qr-scanner";
+import { Scanner } from "@yudiel/react-qr-scanner";
 import clsx from "clsx";
 import { ChevronLeft } from "lucide-react";
 import { useRef, useState } from "react";
@@ -10,8 +10,6 @@ export type BorrowData = {
    borrowerId: string;
    bookCode: string;
    bookISBN: string;
-   bookTitle: string;
-   bookAuthor: string;
 };
 
 type Process = {
@@ -29,8 +27,6 @@ export default function ScannerPage() {
       borrowerId: "",
       bookCode: "",
       bookISBN: "",
-      bookTitle: "",
-      bookAuthor: "",
    });
    const finalizeDialogRef = useRef<HTMLDialogElement>(null);
 

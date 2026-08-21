@@ -53,6 +53,10 @@ const colleges = [
       shorthand: "CM",
       desc: "College of Medicine",
    },
+   {
+      shorthand: "INSTRUCTOR",
+      desc: "INSTRUCTOR",
+   },
 ];
 
 export default function CollegeDropdown({

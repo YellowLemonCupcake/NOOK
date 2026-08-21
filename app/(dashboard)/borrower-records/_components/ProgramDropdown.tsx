@@ -38,7 +38,17 @@ export default function ProgramDropdown({
    useEffect(() => {
       (async () => {
          const { data } = await axios.get<ProgramInfo[]>(offeredProgramsRoute);
-         setPrograms(data);
+         const dataWithInstructor = [
+            ...data,
+            {
+               campus: "MAIN",
+               campus_desc: "CSU Main",
+               progcode: "INSTRUCTOR",
+               progdesc: "INSTRUCTOR",
+               shorthand: "INSTRUCTOR",
+            },
+         ];
+         setPrograms(dataWithInstructor);
       })();
    }, []);
 

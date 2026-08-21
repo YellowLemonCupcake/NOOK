@@ -1,6 +1,6 @@
 "use client";
 
-import { LoaderCircle, Plus, X } from "lucide-react";
+import { Download, LoaderCircle, Plus, X } from "lucide-react";
 import React, { useActionState, useRef, useState } from "react";
 import { useSidebar } from "../../_Sidebar/SidebarContextProvider";
 import clsx from "clsx";
@@ -9,6 +9,8 @@ import CollegeDropdown, { CollegeInfo } from "./CollegeDropdown";
 import addBorrowerRecord from "@/actions/BorrowerRecords/addRecord";
 import { toast } from "react-toastify";
 import { useChangeDialogRef, useDialogRef } from "./DialogProvider";
+import { useRouter } from "next/navigation";
+import { importBorrowerRecordsPage } from "@/constants";
 
 type Infos = {
    program: ProgramInfo | null;
@@ -16,6 +18,7 @@ type Infos = {
 };
 
 export default function AddRecord() {
+   const router = useRouter();
    const { desktop } = useSidebar();
    const [infos, setInfos] = useState<Infos>({
       program: null, // These are actually strings. IDK why but I know I am using shadcn@latest wrong...
@@ -172,7 +175,20 @@ export default function AddRecord() {
                </label>
                <ProgramDropdown value={infos.program} setProgram={setProgram} />
                <CollegeDropdown value={infos.college} setCollege={setCollege} />
-               <div className="mt-2 flex flex-wrap-reverse items-center justify-end gap-3 self-end">
+               <div className="mt-2 flex flex-wrap-reverse items-center justify-end gap-3 self-stretch">
+                  <button
+                     type="button"
+                     onClick={() => {
+                        router.push(importBorrowerRecordsPage);
+                        toggleDialog(false);
+                     }}
+                     className="mr-auto flex items-center gap-1 rounded-md bg-blue-300 px-4 py-2 text-white shadow-sm"
+                  >
+                     <span>
+                        <Download size={17} />
+                     </span>
+                     Import
+                  </button>
                   <button
                      type="button"
                      onClick={() => toggleDialog(false)}

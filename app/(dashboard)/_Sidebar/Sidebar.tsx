@@ -106,7 +106,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
                      href={l.route}
                      className={clsx(
                         "flex items-center gap-2 rounded-md p-3 outline-0",
-                        pathname === l.route
+                        pathname.includes(l.route)
                            ? "bg-yellow-primary pointer-events-none text-gray-800 shadow-sm"
                            : "hover:bg-white/8 focus-visible:bg-white/8",
                      )}
@@ -116,7 +116,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
                         <l.icon />
                      </span>
                      <span className="truncate">{l.label}</span>
-                     {pathname !== l.route && (
+                     {!pathname.includes(l.route) && (
                         <span className="ml-auto">
                            <ChevronRight />
                         </span>

@@ -1,8 +1,32 @@
 "use client";
 
-import { RefObject } from "react";
+import { RefObject, useState } from "react";
 import { type BorrowData } from "../page";
 import { Barcode, BookOpen, IdCard } from "lucide-react";
+
+type BookInfo =
+   | {
+        status: "noisbn" | "pending" | "not-found" | "error";
+     }
+   | {
+        status: "found";
+        data: { title: string; author: string };
+     };
+
+type StudentInfo =
+   | {
+        status: "pending" | "not-found" | "error";
+     }
+   | {
+        status: "found";
+        data: {
+           idNumber: string;
+           name: string;
+           yearLevel: number;
+           program: string;
+           college: string;
+        };
+     };
 
 export default function FinalizeDialog({
    infos,
@@ -13,7 +37,13 @@ export default function FinalizeDialog({
    ref: RefObject<HTMLDialogElement | null>;
    toggle: () => void;
 }) {
-   const { bookAuthor, bookCode, bookISBN, bookTitle, borrowerId } = infos;
+   const { bookCode, bookISBN, borrowerId } = infos;
+
+   const [bookInfo, setBookInfo] = useState<BookInfo>({ status: "pending" });
+   const [studentInfo, setStudentInfo] = useState<StudentInfo>({
+      status: "pending",
+   });
+
    return (
       <dialog
          ref={ref}
@@ -28,7 +58,11 @@ export default function FinalizeDialog({
                {[
                   { label: "Borrower ID", icon: IdCard, data: borrowerId },
                   { label: "Book Barcode", icon: Barcode, data: bookCode },
-                  { label: "Book ISBN", icon: BookOpen, data: bookISBN },
+                  {
+                     label: "Book ISBN",
+                     icon: BookOpen,
+                     data: bookISBN.trim() || "N/A",
+                  },
                ].map((e) => (
                   <div
                      key={e.label}

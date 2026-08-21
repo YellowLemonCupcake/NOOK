@@ -14,8 +14,8 @@ export function AddSheetId({
    serviceAccountEmail: string;
 }) {
    const [currentId, setCurrentId] = useState<string | null>(null);
-   const [sheetIdInput, setSheetIdInput] = useState(currentId ?? "");
-   const edited = currentId !== sheetIdInput && currentId;
+   const [sheetIdInput, setSheetIdInput] = useState("");
+   const edited = currentId !== sheetIdInput && currentId !== null;
 
    const [, formAction, isPending] = useActionState(async () => {
       if (isPending || !edited) return;
@@ -81,7 +81,9 @@ export function AddSheetId({
                      name="sheetId"
                      id="sheetId"
                      value={sheetIdInput}
-                     onChange={(e) => setSheetIdInput(e.target.value)}
+                     onChange={(e) => {
+                        setSheetIdInput(e.target.value);
+                     }}
                      placeholder="e.g. 1aBcD3fGhIjK..."
                      required
                      className="w-full self-stretch py-2 pr-2 focus:outline-0"

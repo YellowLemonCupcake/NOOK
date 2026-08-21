@@ -1,6 +1,7 @@
 import { Prisma } from "@/generated/prisma/client";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { cacheLife } from "next/cache";
 import type { Result, BorrowerRecord } from "@/lib/types";
 
 export async function getBorrowerRecords(): Promise<Result<BorrowerRecord[]>> {
@@ -10,9 +11,7 @@ export async function getBorrowerRecords(): Promise<Result<BorrowerRecord[]>> {
    }
 
    try {
-      const records = await prisma.borrower.findMany({
-         orderBy: { createdAt: "asc" },
-      });
+      const records = await getCachedBorrowerRecords();
       return { ok: true, data: records };
    } catch (e) {
       console.error("Error on getStudentRecords()", e);
@@ -25,4 +24,13 @@ export async function getBorrowerRecords(): Promise<Result<BorrowerRecord[]>> {
       }
       return { ok: false, error: "OTHER", message: "Unexpected error" };
    }
+}
+
+async function getCachedBorrowerRecords(): Promise<BorrowerRecord[]> {
+   "use cache";
+   cacheLife("minutes");
+
+   return prisma.borrower.findMany({
+      orderBy: { createdAt: "asc" },
+   });
 }

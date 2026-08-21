@@ -42,9 +42,9 @@ export default async function setSheetIdAction(
 
       await prisma.configuration.upsert({
          where: { adminAccountId: session.user.id },
-         update: { speadsheetId: newSpreadsheetId },
+         update: { spreadsheetId: newSpreadsheetId },
          create: {
-            speadsheetId: newSpreadsheetId,
+            spreadsheetId: newSpreadsheetId,
             adminAccountId: session.user.id,
          },
       });

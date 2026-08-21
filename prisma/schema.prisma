@@ -19,7 +19,7 @@ model AdminAccount {
 
 model Configuration {
   id           String @id @default(cuid())
-  speadsheetId String
+  spreadsheetId String
 
   adminAccountId String       @unique
   adminAccount   AdminAccount @relation(fields: [adminAccountId], references: [id])

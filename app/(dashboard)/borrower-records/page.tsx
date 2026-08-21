@@ -17,7 +17,7 @@ async function Suspended() {
 
 export default async function BorrowerRecordsPage() {
    return (
-      <div className="p-3">
+      <div className="p-3 pb-25">
          <DialogProvider>
             <div className="overflow-x-auto">
                <table className="font-inter w-full min-w-150 border-separate border-spacing-0">

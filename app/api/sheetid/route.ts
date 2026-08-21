@@ -14,13 +14,14 @@ export async function GET(): Promise<
    try {
       const session = await auth();
       if (!session?.user) return NextResponse.json({ status: "error" });
+
       const configuration = await prisma.configuration.findUnique({
          where: { adminAccountId: session.user.id },
       });
 
       return NextResponse.json({
          status: "success",
-         id: configuration?.speadsheetId ?? "",
+         id: configuration?.spreadsheetId ?? "",
       });
    } catch (e) {
       console.error(e);
