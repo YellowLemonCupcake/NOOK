@@ -6,7 +6,7 @@ import { useSidebar } from "../../_Sidebar/SidebarContextProvider";
 import clsx from "clsx";
 import ProgramDropdown, { ProgramInfo } from "./ProgramDropdown";
 import CollegeDropdown, { CollegeInfo } from "./CollegeDropdown";
-import addRecord from "@/actions/BorrowerRecords/addRecord";
+import addBorrowerRecord from "@/actions/BorrowerRecords/addRecord";
 import { toast } from "react-toastify";
 import { useChangeDialogRef, useDialogRef } from "./DialogProvider";
 
@@ -73,7 +73,13 @@ export default function AddRecord() {
          (formData.get("yearlevel") ?? "1") as string,
          10,
       );
-      const res = await addRecord(idNumber, name, yearLevel, program, college);
+      const res = await addBorrowerRecord(
+         idNumber,
+         name,
+         yearLevel,
+         program,
+         college,
+      );
       if (res.ok) {
          toggleDialog(false);
          setCollege(null);

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useRef } from "react";
+import React, { createContext, useContext, useEffect, useRef } from "react";
 
 const DialogRefContext = createContext<
    React.RefObject<HTMLDialogElement | null>
@@ -18,6 +18,19 @@ export function DialogProvider({ children }: { children: React.ReactNode }) {
    ) => {
       currentDialog.current = dialogRef.current;
    };
+
+   useEffect(() => {
+      const onKeydown = (e: KeyboardEvent) => {
+         if (e.key === "Escape") {
+            currentDialog.current?.close();
+         }
+      };
+      document.addEventListener("keydown", onKeydown);
+
+      return () => {
+         document.removeEventListener("keydown", onKeydown);
+      };
+   }, []);
 
    return (
       <DialogRefContext value={currentDialog}>

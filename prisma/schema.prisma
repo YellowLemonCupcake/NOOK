@@ -50,8 +50,10 @@ model Borrower {
   yearLevel Int
   program   String
   college   String
+  createdAt DateTime @default(now())
 
   borrowLogs BorrowLog[]
+  @@index([createdAt])
 }
 
 model PendingRegistration {

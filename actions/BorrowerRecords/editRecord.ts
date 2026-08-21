@@ -7,7 +7,8 @@ import { Result } from "@/lib/types";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
 import { revalidatePath } from "next/cache";
 
-export default async function addBorrowerRecord(
+export default async function editBorrowerRecord(
+   id: string,
    idNumber: string,
    name: string,
    yearLevel: number,
@@ -19,7 +20,8 @@ export default async function addBorrowerRecord(
       return { ok: false, error: "AUTH", message: "Unauthorized" };
 
    try {
-      const newRecord = await prisma.borrower.create({
+      const newRecord = await prisma.borrower.update({
+         where: { id },
          data: {
             idNumber,
             name,
@@ -31,14 +33,14 @@ export default async function addBorrowerRecord(
       });
 
       revalidatePath(borrowerRecordsPage);
-      return { ok: true, data: { message: `Created ${newRecord.idNumber}` } };
+      return { ok: true, data: { message: `Updated ${newRecord.idNumber}` } };
    } catch (e) {
       if (e instanceof PrismaClientKnownRequestError) {
-         if (e.code === "P2002")
+         if (e.code === "P2025")
             return {
                ok: false,
                error: "AUTH",
-               message: "Record with that ID Number already exists",
+               message: "Borrower record with such id not found",
             };
          return { ok: false, error: "DATABASE", message: e.message };
       }

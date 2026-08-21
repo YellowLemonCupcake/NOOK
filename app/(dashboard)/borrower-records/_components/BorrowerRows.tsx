@@ -3,13 +3,15 @@
 import { BorrowerRecord } from "@/lib/types";
 import clsx from "clsx";
 import { Edit, LoaderCircle, Trash2 } from "lucide-react";
-import { ChangeEvent, useRef, useState } from "react";
+import { ChangeEvent, useActionState, useRef, useState } from "react";
 import { useSidebar } from "../../_Sidebar/SidebarContextProvider";
 import ProgramDropdown, { ProgramInfo } from "./ProgramDropdown";
 import CollegeDropdown, { CollegeInfo } from "./CollegeDropdown";
 import { useChangeDialogRef, useDialogRef } from "./DialogProvider";
 import ReactDOM from "react-dom";
 import useIsMounted from "@/lib/useIsMounted";
+import editBorrowerRecord from "@/actions/BorrowerRecords/editRecord";
+import { toast } from "react-toastify";
 
 type EditInfo = {
    id: string;
@@ -81,8 +83,6 @@ export default function BorrowerRecords({
 
    const editNewRow = (info: EditInfo) => {
       if (
-         // editRecordDialogRef.current === currentDialog.current &&
-         // editRecordDialogRef.current?.open
          currentDialog.current?.open &&
          currentDialog.current !== editRecordDialogRef.current
       )
@@ -96,6 +96,35 @@ export default function BorrowerRecords({
    const closeDialog = () => {
       editRecordDialogRef.current?.close();
    };
+   const onAction = async () => {
+      const loadingToast = toast.loading("Updating...");
+      const res = await editBorrowerRecord(
+         infos.id,
+         infos.idNumber,
+         infos.name,
+         infos.yearLevel,
+         infos.program,
+         infos.college,
+      );
+
+      if (res.ok) {
+         closeDialog();
+         toast.update(loadingToast, {
+            isLoading: false,
+            type: "success",
+            render: res.data.message,
+            autoClose: 3000,
+         });
+      } else {
+         toast.update(loadingToast, {
+            type: "error",
+            isLoading: false,
+            render: res.message,
+            autoClose: 3000,
+         });
+      }
+   };
+   const [, formAction, isPending] = useActionState(onAction, null);
 
    const isMounted = useIsMounted();
    return (
@@ -130,11 +159,9 @@ export default function BorrowerRecords({
                      Edit record
                   </div>
                   <form
-                     // action={formAction}
+                     action={formAction}
                      onSubmit={(e) => {
-                        // if (isPending)
-                        e.preventDefault();
-                        console.log(infos);
+                        if (isPending) e.preventDefault();
                      }}
                      className="flex flex-col items-stretch gap-y-3 p-5 pb-4"
                   >
@@ -210,11 +237,11 @@ export default function BorrowerRecords({
                            Cancel
                         </button>
                         <button
-                           // disabled={isPending}
+                           disabled={isPending}
                            className="flex items-center justify-center rounded-md bg-blue-400 px-4 py-2 text-white shadow-sm"
                         >
-                           {false ? (
-                              <LoaderCircle className="animate-spin text-black/70" />
+                           {isPending ? (
+                              <LoaderCircle className="animate-spin" />
                            ) : (
                               "Edit"
                            )}

@@ -1,3 +1,4 @@
+// Claude assisted
 import { useSyncExternalStore } from "react";
 
 export default function useIsMounted() {
