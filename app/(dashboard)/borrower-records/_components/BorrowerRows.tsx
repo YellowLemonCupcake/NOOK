@@ -2,8 +2,8 @@
 
 import { BorrowerRecord } from "@/lib/types";
 import clsx from "clsx";
-import { Edit, LoaderCircle, Trash2, X } from "lucide-react";
-import React, { ChangeEvent, useActionState, useRef, useState } from "react";
+import { Check, Edit, LoaderCircle, Trash2, X } from "lucide-react";
+import { ChangeEvent, useActionState, useRef, useState } from "react";
 import { useSidebar } from "../../_Sidebar/SidebarContextProvider";
 import ProgramDropdown, { ProgramInfo } from "./ProgramDropdown";
 import CollegeDropdown, { CollegeInfo } from "./CollegeDropdown";
@@ -12,6 +12,7 @@ import ReactDOM from "react-dom";
 import useIsMounted from "@/lib/useIsMounted";
 import editBorrowerRecord from "@/actions/BorrowerRecords/editRecord";
 import { toast } from "react-toastify";
+import deleteBorrowerRecord from "@/actions/BorrowerRecords/deleteRecord";
 
 type EditInfo = {
    id: string;
@@ -31,6 +32,41 @@ function BorrowerRow({
    borrowerRecord: BorrowerRecord;
    onEdit: () => void;
 }) {
+   const [confirmingDelete, setConfirmingDelete] = useState(false);
+   const [isPending, setIsPending] = useState(false);
+
+   const onDelete = async () => {
+      if (confirmingDelete) {
+         setIsPending(true);
+         setConfirmingDelete(false);
+         const loadingToast = toast.loading(
+            `Deleting ${borrowerRecord.idNumber}`,
+         );
+         const res = await deleteBorrowerRecord(borrowerRecord.id);
+         if (res.ok) {
+            toast.update(loadingToast, {
+               isLoading: false,
+               type: "success",
+               render: res.data.message,
+               autoClose: 3000,
+            });
+         } else {
+            toast.update(loadingToast, {
+               isLoading: false,
+               type: "error",
+               render: res.message,
+               autoClose: 3000,
+            });
+         }
+         setIsPending(false);
+         return;
+      }
+      setConfirmingDelete(true);
+      setTimeout(() => {
+         setConfirmingDelete(false);
+      }, 3000);
+   };
+
    return (
       <tr
          className={clsx(
@@ -48,8 +84,14 @@ function BorrowerRow({
             <button onClick={onEdit} className="text-blue-700">
                <Edit size={18} />
             </button>
-            <button className="text-red-700">
-               <Trash2 size={18} />
+            <button onClick={onDelete} className="text-red-700">
+               {isPending ? (
+                  <LoaderCircle size={18} className="animate-spin" />
+               ) : confirmingDelete ? (
+                  <Check size={18} />
+               ) : (
+                  <Trash2 size={18} />
+               )}
             </button>
          </td>
       </tr>
@@ -257,11 +299,6 @@ export default function BorrowerRecords({
                      </div>
                   </form>
                </dialog>,
-               document.getElementById("portal-container")!,
-            )}
-         {isMounted &&
-            ReactDOM.createPortal(
-               <></>,
                document.getElementById("portal-container")!,
             )}
       </>
