@@ -164,7 +164,7 @@ export default function FinalizeDialog({
                            ) : (
                               // error
                               <p className="text-sm text-white/90">
-                                 Error fetching data...
+                                 Error fetching data
                               </p>
                            )}
                         </div>
@@ -191,15 +191,21 @@ export default function FinalizeDialog({
                                        className="animate-spin"
                                     />
                                  </span>
-                                 Fetching record data...
+                                 Fetching book data...
                               </span>
                            ) : bookInfo.status === "not-found" ? (
-                              <></>
+                              <p className="text-sm text-white/90">
+                                 Book info not found
+                              </p>
                            ) : bookInfo.status === "noisbn" ? (
-                              <></>
+                              <p className="text-sm text-white/90">
+                                 Provide an ISBN to fetch book title and author
+                              </p>
                            ) : (
                               // error
-                              <></>
+                              <p className="text-sm text-white/90">
+                                 Error fetching data...
+                              </p>
                            )}
                         </div>
                      )}
