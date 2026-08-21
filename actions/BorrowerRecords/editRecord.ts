@@ -5,7 +5,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { Result } from "@/lib/types";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag, updateTag } from "next/cache";
 
 export default async function editBorrowerRecord(
    id: string,
@@ -33,6 +33,7 @@ export default async function editBorrowerRecord(
       });
 
       revalidatePath(borrowerRecordsPage);
+      updateTag(`borrower:${newRecord.idNumber}`);
       return { ok: true, data: { message: `Updated ${newRecord.idNumber}` } };
    } catch (e) {
       if (e instanceof PrismaClientKnownRequestError) {

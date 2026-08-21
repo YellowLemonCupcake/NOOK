@@ -39,7 +39,7 @@ export default function ImportPage() {
    const [, formAction, isPending] = useActionState(onAction, null);
 
    return (
-      <div className="font-inter mx-auto space-y-2 p-7 text-gray-700 select-none">
+      <div className="font-inter mx-auto p-7 text-gray-700 select-none">
          <Link
             href={borrowerRecordsPage}
             className="mb-5 flex w-fit items-center gap-1.5 text-sm"
@@ -50,7 +50,7 @@ export default function ImportPage() {
             Back
          </Link>
          <h1 className="text-xl font-semibold">Import Student Record</h1>
-         <form action={formAction}>
+         <form action={formAction} className="mt-2 space-y-2">
             <div>
                <label htmlFor="sheetname" className="block text-sm">
                   Sheet name
