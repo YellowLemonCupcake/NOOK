@@ -8,7 +8,7 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(
    req: NextRequest,
 ): Promise<NextResponse<Result<{ title: string; authors: string }>>> {
-   const isbn = req.nextUrl.searchParams.get("isbn");
+   const isbn = normalizeIsbn(req.nextUrl.searchParams.get("isbn") ?? "");
    if (!isbn)
       return NextResponse.json({
          ok: false,
@@ -83,4 +83,8 @@ async function fetchBook(isbn: string) {
          .map((a: { name: string }) => a.name)
          .join(", "),
    };
+}
+
+function normalizeIsbn(isbn: string): string {
+   return isbn.replace(/[-\s]/g, "");
 }
