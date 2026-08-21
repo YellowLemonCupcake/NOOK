@@ -18,7 +18,7 @@ import {
 import { useEffect, useState } from "react";
 import { offeredProgramsRoute } from "@/constants";
 
-type ProgramInfo = {
+export type ProgramInfo = {
    campus: string;
    campus_desc: string;
    progcode: string;
@@ -26,7 +26,13 @@ type ProgramInfo = {
    shorthand: string;
 };
 
-export default function ProgramDropdown() {
+export default function ProgramDropdown({
+   value,
+   setProgram,
+}: {
+   value?: ProgramInfo | null;
+   setProgram?: (program: ProgramInfo | null) => void;
+}) {
    const [programs, setPrograms] = useState<ProgramInfo[]>([]);
 
    useEffect(() => {
@@ -42,6 +48,8 @@ export default function ProgramDropdown() {
          <Combobox
             items={programs.filter((program) => program.campus === "MAIN")}
             itemToStringValue={(program: ProgramInfo) => program.progcode}
+            value={value}
+            onValueChange={setProgram}
          >
             <ComboboxInput
                placeholder="Search programs..."

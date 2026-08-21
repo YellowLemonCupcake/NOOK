@@ -13,48 +13,50 @@ async function Suspended() {
       else <></>;
       return;
    }
-   return <BorrowerRows />;
+   return <BorrowerRows records={res.data} />;
 }
 
 export default async function BorrowerRecordsPage() {
    return (
-      <div className="min-w-150 p-3">
+      <div className="p-3">
          <DialogProvider>
-            <table className="font-inter w-full border-separate border-spacing-0">
-               <thead className="bg-[#E8F5E9] text-sm font-bold select-none">
-                  <tr className="text-black/70">
-                     <th className="border-b-green-primary rounded-tl-xl border-b pl-2">
-                        No.
-                     </th>
-                     <th className="border-b-green-primary border-b py-3">
-                        ID-Number
-                     </th>
-                     <th className="border-b-green-primary border-b py-3">
-                        Name
-                     </th>
-                     <th className="border-b-green-primary border-b py-3">
-                        Course
-                     </th>
-                     <th className="border-b-green-primary border-b py-3">
-                        Year
-                     </th>
-                     <th className="border-b-green-primary border-b py-3">
-                        College
-                     </th>
-                     <th
-                        className="border-b-green-primary rounded-tr-xl border-b py-3"
-                        colSpan={2}
-                     >
-                        Action
-                     </th>
-                  </tr>
-               </thead>
-               <tbody className="text-sm text-gray-600">
-                  <Suspense>
-                     <Suspended />
-                  </Suspense>
-               </tbody>
-            </table>
+            <div className="overflow-x-auto">
+               <table className="font-inter w-full min-w-150 border-separate border-spacing-0">
+                  <thead className="bg-[#E8F5E9] text-sm font-bold select-none">
+                     <tr className="text-black/70">
+                        <th className="border-b-green-primary rounded-tl-xl border-b pl-2">
+                           No.
+                        </th>
+                        <th className="border-b-green-primary border-b py-3">
+                           ID-Number
+                        </th>
+                        <th className="border-b-green-primary border-b py-3">
+                           Name
+                        </th>
+                        <th className="border-b-green-primary border-b py-3">
+                           Course
+                        </th>
+                        <th className="border-b-green-primary border-b py-3">
+                           Year
+                        </th>
+                        <th className="border-b-green-primary border-b py-3">
+                           College
+                        </th>
+                        <th
+                           className="border-b-green-primary rounded-tr-xl border-b py-3"
+                           colSpan={2}
+                        >
+                           Action
+                        </th>
+                     </tr>
+                  </thead>
+                  <tbody className="text-sm text-gray-600">
+                     <Suspense>
+                        <Suspended />
+                     </Suspense>
+                  </tbody>
+               </table>
+            </div>
             <AddRecord />
          </DialogProvider>
       </div>

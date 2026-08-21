@@ -15,6 +15,11 @@ import {
    ItemTitle,
 } from "@/components/ui/item";
 
+export type CollegeInfo = {
+   shorthand: string;
+   desc: string;
+};
+
 const colleges = [
    {
       shorthand: "CEGS",
@@ -50,7 +55,13 @@ const colleges = [
    },
 ];
 
-export default function CollegeDropdown() {
+export default function CollegeDropdown({
+   value,
+   setCollege,
+}: {
+   value?: CollegeInfo | null;
+   setCollege?: (college: CollegeInfo | null) => void;
+}) {
    return (
       <div>
          <p className="mb-1 block text-xs text-gray-600">College</p>
@@ -59,6 +70,8 @@ export default function CollegeDropdown() {
             itemToStringValue={(college: (typeof colleges)[number]) =>
                college.shorthand
             }
+            value={value}
+            onValueChange={setCollege}
          >
             <ComboboxInput
                placeholder="Search colleges..."

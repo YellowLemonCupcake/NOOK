@@ -4,21 +4,38 @@ import { LoaderCircle, Plus } from "lucide-react";
 import React, { useActionState, useRef, useState } from "react";
 import { useSidebar } from "../../_Sidebar/SidebarContextProvider";
 import clsx from "clsx";
-import ProgramDropdown from "./ProgramDropdown";
-import CollegeDropdown from "./CollegeDropdown";
+import ProgramDropdown, { ProgramInfo } from "./ProgramDropdown";
+import CollegeDropdown, { CollegeInfo } from "./CollegeDropdown";
 import addRecord from "@/actions/BorrowerRecords/addRecord";
 import { toast } from "react-toastify";
 import { useChangeDialogRef, useDialogRef } from "./DialogProvider";
 
+type Infos = {
+   program: ProgramInfo | null;
+   college: CollegeInfo | null;
+};
+
 export default function AddRecord() {
    const { desktop } = useSidebar();
-   const [key, setKey] = useState("");
+   const [infos, setInfos] = useState<Infos>({
+      program: null, // These are actually strings. IDK why but I know I am using shadcn@latest wrong...
+      college: null, // These are actually strings. IDK why but I know I am using shadcn@latest wrong...
+   });
+
+   const setProgram = (program: ProgramInfo | null) => {
+      setInfos((prev) => ({ ...prev, program }));
+   };
+   const setCollege = (college: CollegeInfo | null) => {
+      setInfos((prev) => ({ ...prev, college }));
+   };
 
    const addRecordDialogRef = useRef<HTMLDialogElement>(null);
    const dialog = useDialogRef();
    const changeDialog = useChangeDialogRef();
 
    const toggleDialog = (state?: boolean) => {
+      if (dialog.current?.open && dialog.current !== addRecordDialogRef.current)
+         return;
       if (addRecordDialogRef.current) {
          if (state === undefined) {
             if (addRecordDialogRef.current.open) {
@@ -58,8 +75,9 @@ export default function AddRecord() {
       );
       const res = await addRecord(idNumber, name, yearLevel, program, college);
       if (res.ok) {
-         setKey(idNumber + yearLevel + name);
          toggleDialog(false);
+         setCollege(null);
+         setProgram(null);
          toast.success(res.data.message);
          return { idNumber: "", name: "", yearLevel: 1 };
       } else {
@@ -142,10 +160,8 @@ export default function AddRecord() {
                      required
                   />
                </label>
-               <React.Fragment key={key}>
-                  <ProgramDropdown />
-                  <CollegeDropdown />
-               </React.Fragment>
+               <ProgramDropdown value={infos.program} setProgram={setProgram} />
+               <CollegeDropdown value={infos.college} setCollege={setCollege} />
                <div className="mt-2 flex flex-wrap-reverse items-center justify-end gap-3 self-end">
                   <button
                      type="button"

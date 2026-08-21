@@ -52,6 +52,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
                autoClose={3000}
             />
             <AuthProvider>{children}</AuthProvider>
+            <div id="portal-container"></div>
          </body>
       </html>
    );
