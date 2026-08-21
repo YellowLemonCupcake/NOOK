@@ -10,7 +10,9 @@ export async function getBorrowerRecords(): Promise<Result<BorrowerRecord[]>> {
    }
 
    try {
-      const records = await prisma.borrower.findMany();
+      const records = await prisma.borrower.findMany({
+         orderBy: { createdAt: "asc" },
+      });
       return { ok: true, data: records };
    } catch (e) {
       console.error("Error on getStudentRecords()", e);

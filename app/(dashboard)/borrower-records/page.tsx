@@ -10,8 +10,7 @@ async function Suspended() {
    const res = await getBorrowerRecords();
    if (!res.ok) {
       if (res.error === "AUTH") redirect(adminLoginPage);
-      else <></>;
-      return;
+      return <></>;
    }
    return <BorrowerRows records={res.data} />;
 }
@@ -42,10 +41,7 @@ export default async function BorrowerRecordsPage() {
                         <th className="border-b-green-primary border-b py-3">
                            College
                         </th>
-                        <th
-                           className="border-b-green-primary rounded-tr-xl border-b py-3"
-                           colSpan={2}
-                        >
+                        <th className="border-b-green-primary rounded-tr-xl border-b py-3">
                            Action
                         </th>
                      </tr>

@@ -1,6 +1,6 @@
 "use client";
 
-import { LoaderCircle, Plus } from "lucide-react";
+import { LoaderCircle, Plus, X } from "lucide-react";
 import React, { useActionState, useRef, useState } from "react";
 import { useSidebar } from "../../_Sidebar/SidebarContextProvider";
 import clsx from "clsx";
@@ -106,8 +106,11 @@ export default function AddRecord() {
                desktop && "md:left-81",
             )}
          >
-            <div className="bg-green-primary font-inter text-white-primary rounded-t-lg px-5 py-3 font-medium">
-               Add record
+            <div className="bg-green-primary font-inter text-white-primary flex items-center justify-between rounded-t-lg px-5 py-3 font-medium">
+               <span>Add record</span>
+               <button onClick={() => toggleDialog(false)}>
+                  <X size={17} />
+               </button>
             </div>
             <form
                action={formAction}
@@ -129,6 +132,7 @@ export default function AddRecord() {
                         className="font-inter w-full rounded-md p-2 outline-1 outline-gray-200"
                         spellCheck={false}
                         autoComplete="off"
+                        autoFocus
                         defaultValue={state.idNumber}
                         required
                      />

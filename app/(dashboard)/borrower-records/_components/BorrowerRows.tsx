@@ -2,8 +2,8 @@
 
 import { BorrowerRecord } from "@/lib/types";
 import clsx from "clsx";
-import { Edit, LoaderCircle, Trash2 } from "lucide-react";
-import { ChangeEvent, useActionState, useRef, useState } from "react";
+import { Edit, LoaderCircle, Trash2, X } from "lucide-react";
+import React, { ChangeEvent, useActionState, useRef, useState } from "react";
 import { useSidebar } from "../../_Sidebar/SidebarContextProvider";
 import ProgramDropdown, { ProgramInfo } from "./ProgramDropdown";
 import CollegeDropdown, { CollegeInfo } from "./CollegeDropdown";
@@ -32,20 +32,23 @@ function BorrowerRow({
    onEdit: () => void;
 }) {
    return (
-      <tr className="text-center">
+      <tr
+         className={clsx(
+            "text-center hover:bg-blue-50",
+            number % 2 !== 0 && "bg-gray-50",
+         )}
+      >
          <td className="py-2">{number}</td>
          <td className="py-2">{borrowerRecord.idNumber}</td>
          <td className="py-2">{borrowerRecord.name}</td>
          <td className="py-2">{borrowerRecord.program}</td>
          <td className="py-2">{borrowerRecord.yearLevel}</td>
          <td className="py-2">{borrowerRecord.college}</td>
-         <td className="py-2">
-            <button onClick={onEdit}>
+         <td className="space-x-3 py-2">
+            <button onClick={onEdit} className="text-blue-700">
                <Edit size={18} />
             </button>
-         </td>
-         <td className="py-2">
-            <button>
+            <button className="text-red-700">
                <Trash2 size={18} />
             </button>
          </td>
@@ -83,8 +86,9 @@ export default function BorrowerRecords({
 
    const editNewRow = (info: EditInfo) => {
       if (
-         currentDialog.current?.open &&
-         currentDialog.current !== editRecordDialogRef.current
+         (currentDialog.current?.open &&
+            currentDialog.current !== editRecordDialogRef.current) ||
+         isPending
       )
          return;
 
@@ -155,8 +159,11 @@ export default function BorrowerRecords({
                      desktop && "md:left-81",
                   )}
                >
-                  <div className="font-inter text-white-primary rounded-t-lg bg-blue-400 px-5 py-3 font-medium">
-                     Edit record
+                  <div className="font-inter text-white-primary flex items-center justify-between rounded-t-lg bg-blue-400 px-5 py-3 font-medium">
+                     <span>Edit record</span>
+                     <button onClick={closeDialog}>
+                        <X size={17} />
+                     </button>
                   </div>
                   <form
                      action={formAction}
@@ -207,6 +214,7 @@ export default function BorrowerRecords({
                            value={infos.name}
                            onChange={handleChange}
                            autoComplete="off"
+                           autoFocus
                            required
                         />
                      </label>
@@ -249,6 +257,11 @@ export default function BorrowerRecords({
                      </div>
                   </form>
                </dialog>,
+               document.getElementById("portal-container")!,
+            )}
+         {isMounted &&
+            ReactDOM.createPortal(
+               <></>,
                document.getElementById("portal-container")!,
             )}
       </>
