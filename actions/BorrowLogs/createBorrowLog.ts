@@ -58,6 +58,8 @@ export default async function createBorrowLog(
             },
             update: {
                tableRanges: { push: appendResponse?.range },
+               lastBorrowDate: dateNow,
+               timesBorrowed: { increment: 1 },
             },
             where: { idNumber },
          });

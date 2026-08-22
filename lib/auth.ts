@@ -85,7 +85,10 @@ export const authOptions = {
                where: { email: user.email },
                select: { id: true, name: true },
             });
-            if (userFromDb) token.name = userFromDb.name;
+            if (userFromDb) {
+               token.id = userFromDb.id;
+               token.name = userFromDb.name;
+            }
          }
 
          return token;

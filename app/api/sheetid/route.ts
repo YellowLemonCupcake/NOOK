@@ -14,7 +14,6 @@ export async function GET(): Promise<
    try {
       const session = await auth();
       if (!session?.user) return NextResponse.json({ status: "error" });
-
       const spreadsheetId = await getSpreadsheetId(session.user.id);
 
       return NextResponse.json({
