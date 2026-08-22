@@ -1,13 +1,16 @@
 "use server";
 
+import { logsPage } from "@/constants";
 import { auth } from "@/lib/auth";
 import { fetchBook, normalizeIsbn } from "@/lib/fetchBook";
 import getSpreadsheetId from "@/lib/getSpreadsheetId";
 import { sheetsService } from "@/lib/googlesheetsapi";
 import { prisma } from "@/lib/prisma";
+import toPHDateString from "@/lib/toPHDateString";
 import { Result } from "@/lib/types";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
 import { sheets_v4 } from "googleapis";
+import { revalidatePath } from "next/cache";
 
 export default async function createBorrowLog(
    idNumber: string,
@@ -23,12 +26,8 @@ export default async function createBorrowLog(
       };
 
    const dateNow = new Date();
-   const phDateString = dateNow.toLocaleDateString("en-US", {
-      timeZone: "Asia/Manila",
-      month: "2-digit",
-      day: "2-digit",
-      year: "numeric",
-   });
+   const phDateString = toPHDateString(dateNow);
+
    const normalizedISBN = normalizeIsbn(isbn);
 
    try {
@@ -73,6 +72,8 @@ export default async function createBorrowLog(
             bookAuthor: book?.authors,
          },
       });
+
+      revalidatePath(logsPage);
 
       return {
          ok: true,
@@ -130,41 +131,64 @@ async function getOrCreateMonthSheet(
    );
 
    if (!exists) {
-      await sheets.spreadsheets.batchUpdate({
-         spreadsheetId,
-         requestBody: {
-            requests: [
-               {
-                  addSheet: {
-                     properties: { title: sheetName },
+      const template = meta.data.sheets?.find(
+         (s) => s.properties?.title === "TEMPLATE",
+      );
+
+      if (template?.properties?.sheetId !== undefined) {
+         // Duplicate the styled template
+         await sheets.spreadsheets.batchUpdate({
+            spreadsheetId,
+            requestBody: {
+               requests: [
+                  {
+                     duplicateSheet: {
+                        sourceSheetId: template.properties.sheetId,
+                        insertSheetIndex: meta.data.sheets?.length ?? 0,
+                        newSheetName: sheetName,
+                     },
                   },
-               },
-            ],
-         },
-      });
-      await sheetsService.spreadsheets.values.append({
-         spreadsheetId,
-         range: `${sheetName}!A:I`,
-         valueInputOption: "USER_ENTERED",
-         insertDataOption: "INSERT_ROWS",
-         requestBody: {
-            values: [
-               [
-                  "Date",
-                  "ID No.",
-                  "Name",
-                  "Course",
-                  "Year Level",
-                  "College",
-                  "Book Barcode",
-                  "TITLE",
-                  "AUTHOR",
-                  "CALL NUMBER",
-                  "COPIES",
                ],
-            ],
-         },
-      });
+            },
+         });
+      } else {
+         // No template — fall back to a plain sheet + manual header row
+         await sheets.spreadsheets.batchUpdate({
+            spreadsheetId,
+            requestBody: {
+               requests: [
+                  {
+                     addSheet: {
+                        properties: { title: sheetName },
+                     },
+                  },
+               ],
+            },
+         });
+         await sheetsService.spreadsheets.values.append({
+            spreadsheetId,
+            range: `${sheetName}!A:I`,
+            valueInputOption: "USER_ENTERED",
+            insertDataOption: "INSERT_ROWS",
+            requestBody: {
+               values: [
+                  [
+                     "Date",
+                     "ID No.",
+                     "Name",
+                     "Course",
+                     "Year Level",
+                     "College",
+                     "Book Barcode",
+                     "TITLE",
+                     "AUTHOR",
+                     "CALL NUMBER",
+                     "COPIES",
+                  ],
+               ],
+            },
+         });
+      }
    }
 
    return sheetName;
@@ -185,9 +209,9 @@ async function appendToCurrentMonthSheet(
    try {
       const res = await sheetsService.spreadsheets.values.append({
          spreadsheetId,
-         range: `${sheetName}!A:I`,
+         range: `${sheetName}!A:A`,
          valueInputOption: "USER_ENTERED",
-         insertDataOption: "INSERT_ROWS",
+         insertDataOption: "OVERWRITE",
          requestBody: { values },
       });
 

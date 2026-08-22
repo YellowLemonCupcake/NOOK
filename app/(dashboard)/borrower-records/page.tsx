@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { DialogProvider } from "./_components/DialogProvider";
 import BorrowerRows from "./_components/BorrowerRows";
+import { LoaderCircle } from "lucide-react";
 
 async function Suspended() {
    const res = await getBorrowerRecords();
@@ -47,7 +48,23 @@ export default async function BorrowerRecordsPage() {
                      </tr>
                   </thead>
                   <tbody className="text-sm text-gray-600">
-                     <Suspense>
+                     <Suspense
+                        fallback={
+                           <tr>
+                              <td colSpan={7}>
+                                 <div className="mx-auto flex w-fit items-center gap-2 py-5 font-medium">
+                                    <span>
+                                       <LoaderCircle
+                                          className="animate-spin"
+                                          size={20}
+                                       />
+                                    </span>
+                                    Loading...
+                                 </div>
+                              </td>
+                           </tr>
+                        }
+                     >
                         <Suspended />
                      </Suspense>
                   </tbody>
