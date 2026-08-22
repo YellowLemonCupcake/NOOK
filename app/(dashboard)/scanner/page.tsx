@@ -49,7 +49,7 @@ export default function ScannerPage() {
          inputValue: infos.bookCode,
       },
       {
-         label: "Book's ISBN",
+         label: "Book ISBN",
          description:
             "Scan the book's ISBN to fetch its title and author automatically.",
          placeholder: "ISBN",
@@ -159,7 +159,7 @@ export default function ScannerPage() {
                      )}
                      onClick={toggleFinalizeDialog}
                   >
-                     Finalize
+                     Review
                   </button>
                )}
             </div>

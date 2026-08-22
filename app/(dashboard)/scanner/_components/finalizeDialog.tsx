@@ -2,7 +2,14 @@
 
 import React, { RefObject, useEffect, useState } from "react";
 import { type BorrowData } from "../page";
-import { Barcode, BookOpen, IdCard, LoaderCircle } from "lucide-react";
+import {
+   Barcode,
+   BookOpen,
+   Check,
+   IdCard,
+   LoaderCircle,
+   X,
+} from "lucide-react";
 import axios, { AxiosError } from "axios";
 import { bookInfosRoute, borrowerInfoRoute } from "@/constants";
 import { Result } from "@/lib/types";
@@ -14,23 +21,50 @@ type BorrowerInfo = {
    college: string;
 };
 
-type BookInfo =
-   | {
-        status: "noisbn" | "pending" | "not-found" | "error";
-     }
-   | {
-        status: "found";
-        data: { title: string; authors: string };
-     };
+type FetchState<T> =
+   | { status: "pending" }
+   | { status: "not-found" }
+   | { status: "noinput" }
+   | { status: "error" }
+   | { status: "found"; data: T };
 
-type StudentInfo =
-   | {
-        status: "pending" | "not-found" | "error";
-     }
-   | {
-        status: "found";
-        data: BorrowerInfo;
-     };
+function useFetchResource<T>(
+   url: string | null, // pass null to skip fetching (e.g. no ISBN yet)
+): FetchState<T> {
+   const [state, setState] = useState<FetchState<T>>({ status: "pending" });
+
+   useEffect(() => {
+      if (url === null) {
+         return;
+      }
+
+      const controller = new AbortController();
+
+      (async () => {
+         setState({ status: "pending" });
+         try {
+            const { data }: { data: Result<T> } = await axios.get(url, {
+               signal: controller.signal,
+            });
+
+            if (!data.ok) {
+               setState({
+                  status: data.error === "NOT_FOUND" ? "not-found" : "error",
+               });
+            } else {
+               setState({ status: "found", data: data.data });
+            }
+         } catch (e) {
+            if (e instanceof AxiosError && e.code === "ERR_CANCELED") return;
+            setState({ status: "error" });
+         }
+      })();
+
+      return () => controller.abort();
+   }, [url]);
+
+   return !url ? { status: "noinput" } : state;
+}
 
 export default function FinalizeDialog({
    infos,
@@ -43,64 +77,13 @@ export default function FinalizeDialog({
 }) {
    const { bookCode, bookISBN, borrowerId } = infos;
 
-   const [bookInfo, setBookInfo] = useState<BookInfo>({ status: "pending" });
-   const [studentInfo, setStudentInfo] = useState<StudentInfo>({
-      status: "pending",
-   });
+   const bookInfo = useFetchResource<{ title: string; authors: string }>(
+      infos.bookISBN.trim() ? `${bookInfosRoute}?isbn=${infos.bookISBN}` : null,
+   );
 
-   // Data fetching
-   useEffect(() => {
-      const controller = new AbortController();
-      (async () => {
-         setStudentInfo({ status: "pending" });
-         setBookInfo({ status: "pending" });
-         try {
-            const {
-               data,
-            }: { data: Result<{ title: string; authors: string }> } =
-               await axios.get(`${bookInfosRoute}?isbn=${infos.bookISBN}`, {
-                  signal: controller.signal,
-               });
-
-            if (!data.ok) {
-               if (data.error === "NOT_FOUND")
-                  setBookInfo({ status: "not-found" });
-               else setBookInfo({ status: "error" });
-            } else {
-               setBookInfo({
-                  status: "found",
-                  data: { title: data.data.title, authors: data.data.authors },
-               });
-            }
-
-            const { data: data2 }: { data: Result<BorrowerInfo> } =
-               await axios.get(
-                  `${borrowerInfoRoute}?idNumber=${infos.borrowerId}`,
-               );
-
-            if (!data2.ok) {
-               if (data2.error === "NOT_FOUND")
-                  setStudentInfo({ status: "not-found" });
-               else setStudentInfo({ status: "error" });
-            } else {
-               setStudentInfo({
-                  status: "found",
-                  data: {
-                     name: data2.data.name,
-                     yearLevel: data2.data.yearLevel,
-                     program: data2.data.program,
-                     college: data2.data.college,
-                  },
-               });
-            }
-         } catch (e) {
-            if (e instanceof AxiosError) {
-               if (e.code !== "ERR_CANCELED") throw e;
-            }
-         }
-      })();
-      return () => controller.abort();
-   }, [infos]);
+   const studentInfo = useFetchResource<BorrowerInfo>(
+      `${borrowerInfoRoute}?idNumber=${infos.borrowerId}`,
+   );
 
    return (
       <dialog
@@ -154,17 +137,18 @@ export default function FinalizeDialog({
                                        className="animate-spin"
                                     />
                                  </span>
-                                 Fetching record...
+                                 Looking up student record...
                               </span>
                            ) : studentInfo.status === "not-found" ? (
                               <p className="text-sm text-white/90">
-                                 Student not registered yet — this record will
-                                 go to pending registration.
+                                 No student record found. This borrow will be
+                                 saved and added to pending registration.
                               </p>
                            ) : (
                               // error
                               <p className="text-sm text-white/90">
-                                 Error fetching data
+                                 We couldn&apos;t load the student record.
+                                 Please try again.
                               </p>
                            )}
                         </div>
@@ -191,20 +175,22 @@ export default function FinalizeDialog({
                                        className="animate-spin"
                                     />
                                  </span>
-                                 Fetching book data...
+                                 Looking up book details...
                               </span>
                            ) : bookInfo.status === "not-found" ? (
                               <p className="text-sm text-white/90">
-                                 Book info not found
+                                 No book was found for this ISBN.
                               </p>
-                           ) : bookInfo.status === "noisbn" ? (
+                           ) : bookInfo.status === "noinput" ? (
                               <p className="text-sm text-white/90">
-                                 Provide an ISBN to fetch book title and author
+                                 Enter an ISBN to look up the book title and
+                                 author.
                               </p>
                            ) : (
                               // error
                               <p className="text-sm text-white/90">
-                                 Error fetching data...
+                                 We couldn&apos;t load the book details. Please
+                                 try again.
                               </p>
                            )}
                         </div>
@@ -212,12 +198,23 @@ export default function FinalizeDialog({
                   </React.Fragment>
                ))}
             </div>
-            <button
-               className="font-roboto bg-yellow-primary w-full rounded-md p-2 font-semibold shadow-sm select-none"
-               onClick={toggle}
-            >
-               Close
-            </button>
+            <div className="flex gap-2">
+               <button
+                  className="font-roboto bg-yellow-primary flex items-center gap-1 rounded-md px-6 py-2 font-semibold shadow-sm select-none"
+                  onClick={toggle}
+               >
+                  <span>
+                     <X size={20} />
+                  </span>
+                  Close
+               </button>
+               <button className="font-roboto bg-yellow-primary flex w-full grow items-center justify-center gap-1 rounded-md px-6 py-2 font-semibold shadow-sm select-none">
+                  <span>
+                     <Check size={20} />
+                  </span>
+                  Confirm
+               </button>
+            </div>
          </div>
       </dialog>
    );
