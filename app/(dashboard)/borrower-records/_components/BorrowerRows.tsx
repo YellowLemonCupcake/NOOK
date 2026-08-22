@@ -13,6 +13,7 @@ import useIsMounted from "@/lib/useIsMounted";
 import editBorrowerRecord from "@/actions/BorrowerRecords/editRecord";
 import { toast } from "react-toastify";
 import deleteBorrowerRecord from "@/actions/BorrowerRecords/deleteRecord";
+import TableRow from "@/components/table/tableRow";
 
 type EditInfo = {
    id: string;
@@ -24,11 +25,11 @@ type EditInfo = {
 };
 
 function BorrowerRow({
-   number,
+   index,
    borrowerRecord,
    onEdit,
 }: {
-   number: number;
+   index: number;
    borrowerRecord: BorrowerRecord;
    onEdit: () => void;
 }) {
@@ -66,35 +67,34 @@ function BorrowerRow({
          setConfirmingDelete(false);
       }, 3000);
    };
-
    return (
-      <tr
-         className={clsx(
-            "text-center hover:bg-blue-50",
-            number % 2 !== 0 && "bg-gray-50",
-         )}
-      >
-         <td className="py-2">{number}</td>
-         <td className="py-2">{borrowerRecord.idNumber}</td>
-         <td className="py-2">{borrowerRecord.name}</td>
-         <td className="py-2">{borrowerRecord.program}</td>
-         <td className="py-2">{borrowerRecord.yearLevel}</td>
-         <td className="py-2">{borrowerRecord.college}</td>
-         <td className="space-x-3 py-2">
-            <button onClick={onEdit} className="text-blue-700">
-               <Edit size={18} />
-            </button>
-            <button onClick={onDelete} className="text-red-700">
-               {isPending ? (
-                  <LoaderCircle size={18} className="animate-spin" />
-               ) : confirmingDelete ? (
-                  <Check size={18} />
-               ) : (
-                  <Trash2 size={18} />
-               )}
-            </button>
-         </td>
-      </tr>
+      <TableRow
+         index={index}
+         data={[
+            index,
+            borrowerRecord.idNumber,
+            borrowerRecord.name,
+            borrowerRecord.program,
+            borrowerRecord.yearLevel,
+            borrowerRecord.college,
+            <>
+               <div className="space-x-3 py-2">
+                  <button onClick={onEdit} className="text-blue-700">
+                     <Edit size={18} />
+                  </button>
+                  <button onClick={onDelete} className="text-red-700">
+                     {isPending ? (
+                        <LoaderCircle size={18} className="animate-spin" />
+                     ) : confirmingDelete ? (
+                        <Check size={18} />
+                     ) : (
+                        <Trash2 size={18} />
+                     )}
+                  </button>
+               </div>
+            </>,
+         ]}
+      />
    );
 }
 
@@ -178,7 +178,7 @@ export default function BorrowerRecords({
          {records.map((record, i) => (
             <BorrowerRow
                key={record.id}
-               number={i + 1}
+               index={i + 1}
                borrowerRecord={record}
                onEdit={() =>
                   editNewRow({

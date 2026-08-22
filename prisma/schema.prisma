@@ -18,7 +18,7 @@ model AdminAccount {
 }
 
 model Configuration {
-  id           String @id @default(cuid())
+  id            String @id @default(cuid())
   spreadsheetId String
 
   adminAccountId String       @unique
@@ -36,7 +36,6 @@ model BorrowLog {
   callNumber  String?
   copies      Int?
 
-
   @@index([date])
   @@index([idNumber, date])
 }
@@ -44,7 +43,7 @@ model BorrowLog {
 model Borrower {
   id String @id @default(cuid())
 
-  idNumber  String @unique
+  idNumber  String   @unique
   name      String
   yearLevel Int
   program   String
@@ -57,6 +56,8 @@ model Borrower {
 model PendingRegistration {
   id Int @id @default(autoincrement())
 
-  idNumber   String @unique
-  tableRanges String[] // List of sheet range where inputs for student infos were temporarily emptied.
+  idNumber       String   @unique
+  timesBorrowed  Int      @default(1)
+  lastBorrowDate DateTime @default(now())
+  tableRanges    String[] // List of sheet range where inputs for student infos were temporarily emptied.
 }

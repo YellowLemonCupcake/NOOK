@@ -23,7 +23,7 @@ export default async function addBorrowerRecord(
          data: {
             idNumber,
             name,
-            yearLevel,
+            yearLevel: program === "INSTRUCTOR" ? 0 : yearLevel,
             program,
             college,
          },

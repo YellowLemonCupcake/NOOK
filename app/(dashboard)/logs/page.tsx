@@ -1,3 +1,4 @@
+import FallbackRow from "@/components/table/fallbackRow";
 import Table from "@/components/table/table";
 import TableRow from "@/components/table/tableRow";
 import { adminLoginPage } from "@/constants";
@@ -20,10 +21,10 @@ async function Suspended() {
          data={[
             toPHDateString(row.date),
             row.idNumber,
-            row.borrower?.name ?? "PENDING",
-            row.borrower?.program ?? "PENDING",
-            row.borrower?.yearLevel ?? "PENDING",
-            row.borrower?.college ?? "PENDING",
+            row.borrower?.name,
+            row.borrower?.program,
+            row.borrower?.yearLevel,
+            row.borrower?.college,
             row.bookBarcode,
             row.bookTitle,
             row.bookAuthor,
@@ -49,7 +50,7 @@ export default async function Logs() {
                   "Author",
                ]}
             >
-               <Suspense>
+               <Suspense fallback={<FallbackRow />}>
                   <Suspended />
                </Suspense>
             </Table>
