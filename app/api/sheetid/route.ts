@@ -1,5 +1,5 @@
 import { auth } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
+import getSpreadsheetId from "@/lib/getSpreadsheetId";
 import { NextResponse } from "next/server";
 
 export async function GET(): Promise<
@@ -15,13 +15,11 @@ export async function GET(): Promise<
       const session = await auth();
       if (!session?.user) return NextResponse.json({ status: "error" });
 
-      const configuration = await prisma.configuration.findUnique({
-         where: { adminAccountId: session.user.id },
-      });
+      const spreadsheetId = await getSpreadsheetId(session.user.id);
 
       return NextResponse.json({
          status: "success",
-         id: configuration?.spreadsheetId ?? "",
+         id: spreadsheetId,
       });
    } catch (e) {
       console.error(e);

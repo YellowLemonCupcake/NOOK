@@ -76,6 +76,11 @@ export default function ScannerPage() {
    };
    const prevStep = () => setStep((prev) => (prev - 1 >= 0 ? prev - 1 : prev));
 
+   const resetAll = () => {
+      setInfos({ bookCode: "", bookISBN: "", borrowerId: "" });
+      setStep(0);
+   };
+
    return (
       <div className="relative min-h-[calc(100dvh-85px)] bg-[#003300]/90 p-7 select-none">
          <Library className="absolute inset-0 -z-10 size-full object-cover" />
@@ -168,6 +173,7 @@ export default function ScannerPage() {
             infos={infos}
             ref={finalizeDialogRef}
             toggle={toggleFinalizeDialog}
+            resetAll={resetAll}
          />
       </div>
    );

@@ -13,6 +13,9 @@ import {
 import axios, { AxiosError } from "axios";
 import { bookInfosRoute, borrowerInfoRoute } from "@/constants";
 import { Result } from "@/lib/types";
+import createBorrowLog from "@/actions/BorrowLogs/createBorrowLog";
+import { toast } from "react-toastify";
+import clsx from "clsx";
 
 type BorrowerInfo = {
    name: string;
@@ -70,20 +73,40 @@ export default function FinalizeDialog({
    infos,
    ref,
    toggle,
+   resetAll,
 }: {
    infos: BorrowData;
    ref: RefObject<HTMLDialogElement | null>;
    toggle: () => void;
+   resetAll: () => void;
 }) {
-   const { bookCode, bookISBN, borrowerId } = infos;
-
    const bookInfo = useFetchResource<{ title: string; authors: string }>(
       infos.bookISBN.trim() ? `${bookInfosRoute}?isbn=${infos.bookISBN}` : null,
    );
-
    const studentInfo = useFetchResource<BorrowerInfo>(
       `${borrowerInfoRoute}?idNumber=${infos.borrowerId}`,
    );
+
+   const [error, setError] = useState<string | null>(null);
+   const [isPending, setIsPending] = useState(false);
+   const onConfirm = async () => {
+      if (isPending) return;
+      setIsPending(true);
+      setError(null);
+      const res = await createBorrowLog(
+         infos.borrowerId,
+         infos.bookCode,
+         infos.bookISBN,
+      );
+      if (res.ok) {
+         toast.success(res.data.message, { autoClose: 3000 });
+         toggle();
+         resetAll();
+      } else {
+         setError(res.message);
+      }
+      setIsPending(false);
+   };
 
    return (
       <dialog
@@ -97,12 +120,20 @@ export default function FinalizeDialog({
             </p>
             <div className="my-4 space-y-2 text-white">
                {[
-                  { label: "Borrower ID", icon: IdCard, data: borrowerId },
-                  { label: "Book Barcode", icon: Barcode, data: bookCode },
+                  {
+                     label: "Borrower ID",
+                     icon: IdCard,
+                     data: infos.borrowerId,
+                  },
+                  {
+                     label: "Book Barcode",
+                     icon: Barcode,
+                     data: infos.bookCode,
+                  },
                   {
                      label: "Book ISBN",
                      icon: BookOpen,
-                     data: bookISBN.trim() || "N/A",
+                     data: infos.bookISBN.trim() || "N/A",
                   },
                ].map((e, i) => (
                   <React.Fragment key={e.label}>
@@ -198,6 +229,15 @@ export default function FinalizeDialog({
                   </React.Fragment>
                ))}
             </div>
+            {error && (
+               <p
+                  className={clsx(
+                     "-mt-2 mb-2 text-center font-semibold text-red-700",
+                  )}
+               >
+                  {error}
+               </p>
+            )}
             <div className="flex gap-2">
                <button
                   className="font-roboto bg-yellow-primary flex items-center gap-1 rounded-md px-6 py-2 font-semibold shadow-sm select-none"
@@ -208,11 +248,21 @@ export default function FinalizeDialog({
                   </span>
                   Close
                </button>
-               <button className="font-roboto bg-yellow-primary flex w-full grow items-center justify-center gap-1 rounded-md px-6 py-2 font-semibold shadow-sm select-none">
-                  <span>
-                     <Check size={20} />
-                  </span>
-                  Confirm
+               <button
+                  disabled={isPending}
+                  onClick={onConfirm}
+                  className="font-roboto bg-yellow-primary flex w-full grow items-center justify-center gap-1 rounded-md px-6 py-2 font-semibold shadow-sm select-none"
+               >
+                  {isPending ? (
+                     <LoaderCircle className="animate-spin" size={20} />
+                  ) : (
+                     <>
+                        <span>
+                           <Check size={20} />
+                        </span>
+                        Confirm
+                     </>
+                  )}
                </button>
             </div>
          </div>

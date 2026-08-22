@@ -4,6 +4,7 @@ import { sheetsService } from "@/lib/googlesheetsapi";
 import { prisma } from "@/lib/prisma";
 import { Result } from "@/lib/types";
 import { GaxiosError } from "gaxios";
+import { updateTag } from "next/cache";
 
 export default async function setSheetIdAction(
    id: string,
@@ -48,6 +49,8 @@ export default async function setSheetIdAction(
             adminAccountId: session.user.id,
          },
       });
+
+      updateTag(`spreadsheetId:${session.user.id}`);
 
       return {
          ok: true,
