@@ -1,6 +1,6 @@
 "use client";
 
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import {
    Combobox,
    ComboboxContent,
@@ -37,18 +37,24 @@ export default function ProgramDropdown({
 
    useEffect(() => {
       (async () => {
-         const { data } = await axios.get<ProgramInfo[]>(offeredProgramsRoute);
-         const dataWithInstructor = [
-            ...data,
-            {
-               campus: "MAIN",
-               campus_desc: "CSU Main",
-               progcode: "INSTRUCTOR",
-               progdesc: "INSTRUCTOR",
-               shorthand: "INSTRUCTOR",
-            },
-         ];
-         setPrograms(dataWithInstructor);
+         try {
+            const res = await axios.get<ProgramInfo[]>(offeredProgramsRoute);
+            const dataWithInstructor = [
+               ...res.data,
+               {
+                  campus: "MAIN",
+                  campus_desc: "CSU Main",
+                  progcode: "INSTRUCTOR",
+                  progdesc: "INSTRUCTOR",
+                  shorthand: "INSTRUCTOR",
+               },
+            ];
+            setPrograms(dataWithInstructor);
+         } catch (e) {
+            if (e instanceof AxiosError) {
+               console.log(e);
+            }
+         }
       })();
    }, []);
 
