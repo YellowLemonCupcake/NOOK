@@ -25,6 +25,7 @@ export default function PendingRegistrationPage() {
                "Last borrow date",
                "Action",
             ]}
+            extraStyling="min-w-150"
          >
             <Suspense fallback={<FallbackRow />}>
                <Suspended />

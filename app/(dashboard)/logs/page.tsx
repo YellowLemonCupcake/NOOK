@@ -49,6 +49,7 @@ export default async function Logs() {
                   "Title",
                   "Author",
                ]}
+               extraStyling="min-w-250"
             >
                <Suspense fallback={<FallbackRow />}>
                   <Suspended />

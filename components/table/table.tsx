@@ -6,12 +6,19 @@ import React from "react";
 export default function Table({
    headers,
    children,
+   extraStyling,
 }: {
+   extraStyling?: string;
    headers: (React.ReactNode | string)[];
    children: React.ReactNode;
 }) {
    return (
-      <table className="font-inter w-full min-w-150 border-separate border-spacing-0">
+      <table
+         className={clsx(
+            "font-inter w-full border-separate border-spacing-0",
+            extraStyling,
+         )}
+      >
          <thead className="bg-[#E8F5E9] text-sm font-bold select-none">
             <tr className="text-black/70">
                {headers.map((h, i) => (

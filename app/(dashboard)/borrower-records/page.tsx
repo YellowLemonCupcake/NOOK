@@ -30,6 +30,7 @@ export default async function BorrowerRecordsPage() {
                "College",
                "Action",
             ]}
+            extraStyling="min-w-150"
          >
             <Suspense fallback={<FallbackRow />}>
                <Suspended />
