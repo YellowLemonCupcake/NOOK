@@ -4,16 +4,16 @@ import { Download, LoaderCircle, Plus, X } from "lucide-react";
 import React, { useActionState, useRef, useState } from "react";
 import { useSidebar } from "../../_Sidebar/SidebarContextProvider";
 import clsx from "clsx";
-import ProgramDropdown, { ProgramInfo } from "./ProgramDropdown";
+import ProgramDropdown from "./ProgramDropdown";
 import CollegeDropdown, { CollegeInfo } from "./CollegeDropdown";
 import addBorrowerRecord from "@/actions/BorrowerRecords/addRecord";
 import { toast } from "react-toastify";
 import { useChangeDialogRef, useDialogRef } from "./DialogProvider";
 import { useRouter } from "next/navigation";
-import { importBorrowerRecordsPage } from "@/constants";
+import { importBorrowerRecordsPage, programs } from "@/constants";
 
 type Infos = {
-   program: ProgramInfo | null;
+   program: (typeof programs)[number] | null;
    college: CollegeInfo | null;
 };
 
@@ -25,7 +25,7 @@ export default function AddRecord() {
       college: null, // These are actually strings. IDK why but I know I am using shadcn@latest wrong...
    });
 
-   const setProgram = (program: ProgramInfo | null) => {
+   const setProgram = (program: (typeof programs)[number] | null) => {
       setInfos((prev) => ({ ...prev, program }));
    };
    const setCollege = (college: CollegeInfo | null) => {

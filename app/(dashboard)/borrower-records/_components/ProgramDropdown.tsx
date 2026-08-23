@@ -1,6 +1,5 @@
 "use client";
 
-import axios, { AxiosError } from "axios";
 import {
    Combobox,
    ComboboxContent,
@@ -15,55 +14,21 @@ import {
    ItemDescription,
    ItemTitle,
 } from "@/components/ui/item";
-import { useEffect, useState } from "react";
-import { offeredProgramsRoute } from "@/constants";
-
-export type ProgramInfo = {
-   campus: string;
-   campus_desc: string;
-   progcode: string;
-   progdesc: string;
-   shorthand: string;
-};
+import { programs } from "@/constants";
 
 export default function ProgramDropdown({
    value,
    setProgram,
 }: {
-   value?: ProgramInfo | null;
-   setProgram?: (program: ProgramInfo | null) => void;
+   value?: (typeof programs)[number] | null;
+   setProgram?: (program: (typeof programs)[number] | null) => void;
 }) {
-   const [programs, setPrograms] = useState<ProgramInfo[]>([]);
-
-   useEffect(() => {
-      (async () => {
-         try {
-            const res = await axios.get<ProgramInfo[]>(offeredProgramsRoute);
-            const dataWithInstructor = [
-               ...res.data,
-               {
-                  campus: "MAIN",
-                  campus_desc: "CSU Main",
-                  progcode: "INSTRUCTOR",
-                  progdesc: "INSTRUCTOR",
-                  shorthand: "INSTRUCTOR",
-               },
-            ];
-            setPrograms(dataWithInstructor);
-         } catch (e) {
-            if (e instanceof AxiosError) {
-               console.log(e);
-            }
-         }
-      })();
-   }, []);
-
    return (
       <div>
          <p className="mb-1 block text-xs text-gray-600">Program</p>
          <Combobox
-            items={programs.filter((program) => program.campus === "MAIN")}
-            itemToStringValue={(program: ProgramInfo) => program.progcode}
+            items={programs}
+            itemToStringValue={(p: (typeof programs)[number]) => p.progcode}
             value={value}
             onValueChange={setProgram}
          >
@@ -75,7 +40,7 @@ export default function ProgramDropdown({
             <ComboboxContent>
                <ComboboxEmpty>No programs found.</ComboboxEmpty>
                <ComboboxList>
-                  {(program: ProgramInfo) => (
+                  {(program: (typeof programs)[number]) => (
                      <ComboboxItem
                         key={program.progcode}
                         value={program.progcode}

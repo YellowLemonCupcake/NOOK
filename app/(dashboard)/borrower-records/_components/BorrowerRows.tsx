@@ -5,7 +5,7 @@ import clsx from "clsx";
 import { Check, Edit, LoaderCircle, Trash2, X } from "lucide-react";
 import { ChangeEvent, useActionState, useRef, useState } from "react";
 import { useSidebar } from "../../_Sidebar/SidebarContextProvider";
-import ProgramDropdown, { ProgramInfo } from "./ProgramDropdown";
+import ProgramDropdown from "./ProgramDropdown";
 import CollegeDropdown, { CollegeInfo } from "./CollegeDropdown";
 import { useChangeDialogRef, useDialogRef } from "./DialogProvider";
 import ReactDOM from "react-dom";
@@ -14,6 +14,7 @@ import editBorrowerRecord from "@/actions/BorrowerRecords/editRecord";
 import { toast } from "react-toastify";
 import deleteBorrowerRecord from "@/actions/BorrowerRecords/deleteRecord";
 import TableRow from "@/components/table/tableRow";
+import { programs } from "@/constants";
 
 type EditInfo = {
    id: string;
@@ -261,7 +262,9 @@ export default function BorrowerRecords({
                         />
                      </label>
                      <ProgramDropdown
-                        value={infos.program as unknown as ProgramInfo}
+                        value={
+                           infos.program as unknown as (typeof programs)[number]
+                        }
                         setProgram={(program) => {
                            setInfos((prev) => ({
                               ...prev,

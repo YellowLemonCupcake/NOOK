@@ -2,19 +2,22 @@ import { Prisma } from "@/generated/prisma/client";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { cacheLife } from "next/cache";
-import type { Result, BorrowerRecord } from "@/lib/types";
+import type { Result } from "@/lib/types";
+import { PendingRegistrationModel } from "@/generated/prisma/models";
 
-export async function getBorrowerRecords(): Promise<Result<BorrowerRecord[]>> {
+export async function getPendingBorrowerRecords(): Promise<
+   Result<PendingRegistrationModel[]>
+> {
    const session = await auth();
    if (!session?.user) {
       return { ok: false, error: "AUTH", message: "Unauthorized" };
    }
 
    try {
-      const records = await getCachedBorrowerRecords();
-      return { ok: true, data: records };
+      const pendingRegistrations = await getCachedPendingBorrowerRecords();
+      return { ok: true, data: pendingRegistrations };
    } catch (e) {
-      console.error("Error on getStudentRecords()", e);
+      console.error("Error on getPendingStudentRecords()", e);
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
          return {
             ok: false,
@@ -26,26 +29,28 @@ export async function getBorrowerRecords(): Promise<Result<BorrowerRecord[]>> {
    }
 }
 
-async function getCachedBorrowerRecords(): Promise<BorrowerRecord[]> {
+async function getCachedPendingBorrowerRecords(): Promise<
+   PendingRegistrationModel[]
+> {
    "use cache";
    cacheLife("days");
 
-   return prisma.borrower.findMany({
-      orderBy: { createdAt: "asc" },
-   });
+   return prisma.pendingRegistration.findMany();
 }
 
-export async function getBorrowerRecordsCount(): Promise<Result<number>> {
+export async function getPendingBorrowerRecordsCount(): Promise<
+   Result<number>
+> {
    const session = await auth();
    if (!session?.user) {
       return { ok: false, error: "AUTH", message: "Unauthorized" };
    }
 
    try {
-      const count = await getCachedBorrowerRecordsCount();
+      const count = await getCachedPendingBorrowerRecordsCount();
       return { ok: true, data: count };
    } catch (e) {
-      console.error("Error on getBorrowerRecordsCount()", e);
+      console.error("Error on getPendingBorrowerRecordsCount()", e);
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
          return {
             ok: false,
@@ -57,9 +62,9 @@ export async function getBorrowerRecordsCount(): Promise<Result<number>> {
    }
 }
 
-async function getCachedBorrowerRecordsCount() {
+async function getCachedPendingBorrowerRecordsCount() {
    "use cache";
    cacheLife("days");
 
-   return await prisma.borrower.count();
+   return await prisma.pendingRegistration.count();
 }

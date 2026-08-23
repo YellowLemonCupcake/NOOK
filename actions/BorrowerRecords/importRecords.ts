@@ -1,6 +1,6 @@
 "use server";
 
-import { borrowerRecordsPage } from "@/constants";
+import { borrowerRecordsPage, importBorrowerRecordsPage } from "@/constants";
 import { auth } from "@/lib/auth";
 import { sheetsService } from "@/lib/googlesheetsapi";
 import { prisma } from "@/lib/prisma";
@@ -51,6 +51,7 @@ export default async function importRecords(
       });
 
       revalidatePath(borrowerRecordsPage);
+      revalidatePath(importBorrowerRecordsPage);
       return { ok: true, data: { message: `Imported ${count} record/s` } };
    } catch (e) {
       if (e instanceof PrismaClientKnownRequestError) {

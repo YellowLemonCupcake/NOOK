@@ -19,25 +19,23 @@ async function Suspended() {
 
 export default async function BorrowerRecordsPage() {
    return (
-      <div className="p-3 pb-25">
-         <DialogProvider>
-            <Table
-               headers={[
-                  "No.",
-                  "ID-Number",
-                  "Name",
-                  "Course",
-                  "Year",
-                  "College",
-                  "Action",
-               ]}
-            >
-               <Suspense fallback={<FallbackRow />}>
-                  <Suspended />
-               </Suspense>
-            </Table>
-            <AddRecord />
-         </DialogProvider>
-      </div>
+      <DialogProvider>
+         <Table
+            headers={[
+               "No.",
+               "ID-Number",
+               "Name",
+               "Course",
+               "Year",
+               "College",
+               "Action",
+            ]}
+         >
+            <Suspense fallback={<FallbackRow />}>
+               <Suspended />
+            </Suspense>
+         </Table>
+         <AddRecord />
+      </DialogProvider>
    );
 }

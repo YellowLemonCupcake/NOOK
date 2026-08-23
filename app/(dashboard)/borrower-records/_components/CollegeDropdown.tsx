@@ -14,50 +14,12 @@ import {
    ItemDescription,
    ItemTitle,
 } from "@/components/ui/item";
+import { colleges } from "@/constants";
 
 export type CollegeInfo = {
    shorthand: string;
    desc: string;
 };
-
-const colleges = [
-   {
-      shorthand: "CEGS",
-      desc: "College of Engineering and Geosciences",
-   },
-   {
-      shorthand: "CED",
-      desc: "College of Education",
-   },
-   {
-      shorthand: "CFES",
-      desc: "College of Forestry and Environmental Science",
-   },
-   {
-      shorthand: "CMNS",
-      desc: "College of Mathematics and Natural Sciences",
-   },
-   {
-      shorthand: "CCIS",
-      desc: "College of Computing and Information Sciences",
-   },
-   {
-      shorthand: "CAA",
-      desc: "College of Agriculture and Agri-Industries",
-   },
-   {
-      shorthand: "CHASS",
-      desc: "College of Humanities and Social Sciences",
-   },
-   {
-      shorthand: "CM",
-      desc: "College of Medicine",
-   },
-   {
-      shorthand: "INSTRUCTOR",
-      desc: "INSTRUCTOR",
-   },
-];
 
 export default function CollegeDropdown({
    value,
