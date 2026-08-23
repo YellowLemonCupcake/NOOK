@@ -1,7 +1,7 @@
 import { Prisma } from "@/generated/prisma/client";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { cacheLife } from "next/cache";
+import { cacheLife, cacheTag, updateTag } from "next/cache";
 import type { Result } from "@/lib/types";
 import { PendingRegistrationModel } from "@/generated/prisma/models";
 
@@ -65,6 +65,11 @@ export async function getPendingBorrowerRecordsCount(): Promise<
 async function getCachedPendingBorrowerRecordsCount() {
    "use cache";
    cacheLife("days");
+   cacheTag("pendingBorrowerRecordsCount");
 
    return await prisma.pendingRegistration.count();
+}
+
+export function updateCachedPendingBorrowerRecordsCount() {
+   updateTag("pendingBorrowerRecordsCount");
 }

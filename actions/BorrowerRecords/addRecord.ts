@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { Result } from "@/lib/types";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
 import { revalidatePath } from "next/cache";
+import registerPendingBorrower from "../PendingRegistration/registerPendingBorrower";
 
 export default async function addBorrowerRecord(
    idNumber: string,
@@ -19,10 +20,22 @@ export default async function addBorrowerRecord(
       return { ok: false, error: "AUTH", message: "Unauthorized" };
 
    try {
-      const newRecord = await prisma.borrower.create({
-         data: {
+      const pendingRegistration = await prisma.pendingRegistration.findUnique({
+         where: { idNumber: idNumber.trim() },
+      });
+      if (pendingRegistration)
+         return await registerPendingBorrower(
             idNumber,
             name,
+            yearLevel,
+            program,
+            college,
+         );
+
+      const newRecord = await prisma.borrower.create({
+         data: {
+            idNumber: idNumber.trim(),
+            name: name.trim(),
             yearLevel: program === "INSTRUCTOR" ? 0 : yearLevel,
             program,
             college,

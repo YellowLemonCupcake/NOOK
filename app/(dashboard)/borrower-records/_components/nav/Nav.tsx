@@ -19,6 +19,7 @@ async function PendingStudentsCount() {
       if (pendingStudentCount.error === "AUTH") redirect(adminLoginPage);
       return null;
    }
+   if (pendingStudentCount.data === 0) return null;
    return (
       <span className="ml-0.5 inline-flex size-5 items-center justify-center rounded-full bg-red-700 text-xs text-white">
          {pendingStudentCount.data}

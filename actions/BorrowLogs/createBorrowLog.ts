@@ -1,6 +1,7 @@
 "use server";
 
-import { logsPage } from "@/constants";
+import { logsPage, pendingBorrowerRecordPage } from "@/constants";
+import { updateCachedPendingBorrowerRecordsCount } from "@/data-access-layer/PendingBorrowerRecords";
 import { auth } from "@/lib/auth";
 import { fetchBook, normalizeIsbn } from "@/lib/fetchBook";
 import getSpreadsheetId from "@/lib/getSpreadsheetId";
@@ -63,6 +64,8 @@ export default async function createBorrowLog(
             },
             where: { idNumber },
          });
+         revalidatePath(pendingBorrowerRecordPage);
+         updateCachedPendingBorrowerRecordsCount();
       }
 
       await prisma.borrowLog.create({
