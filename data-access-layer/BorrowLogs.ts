@@ -5,14 +5,18 @@ import { cacheLife } from "next/cache";
 import type { Result } from "@/lib/types";
 import { BorrowLogModel } from "@/generated/prisma/models";
 
-export async function getBorrowLogs(): Promise<Result<BorrowLogModel[]>> {
+export async function getBorrowLogs(
+   idNumber?: string,
+   from?: Date,
+   to?: Date,
+): Promise<Result<BorrowLogModel[]>> {
    const session = await auth();
    if (!session?.user) {
       return { ok: false, error: "AUTH", message: "Unauthorized" };
    }
 
    try {
-      const logs = await getCachedBorrowLogs();
+      const logs = await getCachedBorrowLogs(idNumber, from, to);
       return { ok: true, data: logs };
    } catch (e) {
       console.error("Error on getBorrowLogs()", e);
@@ -27,11 +31,28 @@ export async function getBorrowLogs(): Promise<Result<BorrowLogModel[]>> {
    }
 }
 
-async function getCachedBorrowLogs(): Promise<BorrowLogModel[]> {
+async function getCachedBorrowLogs(
+   idNumber?: string,
+   from?: Date,
+   to?: Date,
+): Promise<BorrowLogModel[]> {
    "use cache";
    cacheLife("minutes");
 
    return prisma.borrowLog.findMany({
-      orderBy: { date: "asc" },
+      where: {
+         idNumber,
+         ...(from || to
+            ? {
+                 date: {
+                    gte: from,
+                    lte: to,
+                 },
+              }
+            : {}),
+      },
+      orderBy: {
+         date: "desc",
+      },
    });
 }

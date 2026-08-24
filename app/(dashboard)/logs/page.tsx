@@ -4,17 +4,34 @@ import TableRow from "@/components/table/tableRow";
 import { adminLoginPage } from "@/constants";
 import getLogsWithBorrower from "@/data-access-layer/BorrowLogsWithBorrower";
 import toPHDateString from "@/lib/toPHDateString";
+import { endOfDay, parseISO, startOfDay } from "date-fns";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
+import Filter from "./_components/Filter";
+import Pagination from "./_components/Pagination";
 
-async function Suspended() {
-   const logsWithBorrower = await getLogsWithBorrower();
+type SearchParameters = Promise<{
+   idNumber?: string;
+   from?: string;
+   to?: string;
+   page?: string;
+}>;
+
+async function Suspended({ searchParams }: { searchParams: SearchParameters }) {
+   const { from, to, idNumber, page: pageParam } = await searchParams;
+   const page = Math.max(1, Number.parseInt(pageParam ?? "1", 10) || 1);
+   const logsWithBorrower = await getLogsWithBorrower(
+      idNumber,
+      from ? startOfDay(parseISO(from)) : undefined,
+      to ? endOfDay(parseISO(to)) : undefined,
+      page,
+   );
    if (!logsWithBorrower.ok) {
       if (logsWithBorrower.error === "AUTH") redirect(adminLoginPage);
       return <>Error</>;
    }
 
-   return logsWithBorrower.data.map((row, i) => (
+   return logsWithBorrower.data.logs.map((row, i) => (
       <TableRow
          key={i}
          index={i}
@@ -33,9 +50,56 @@ async function Suspended() {
    ));
 }
 
-export default async function Logs() {
+async function SuspendedPagination({
+   searchParams,
+}: {
+   searchParams: SearchParameters;
+}) {
+   const { from, to, idNumber, page: pageParam } = await searchParams;
+   const page = Math.max(1, Number.parseInt(pageParam ?? "1", 10) || 1);
+   const logsWithBorrower = await getLogsWithBorrower(
+      idNumber,
+      from ? startOfDay(parseISO(from)) : undefined,
+      to ? endOfDay(parseISO(to)) : undefined,
+      page,
+   );
+   if (!logsWithBorrower.ok) return null;
+
+   return (
+      <Pagination
+         page={page}
+         total={logsWithBorrower.data.total}
+         filters={{ idNumber, from, to }}
+      />
+   );
+}
+
+async function SuspendedFilter({
+   searchParams,
+}: {
+   searchParams: SearchParameters;
+}) {
+   const { from, to, idNumber } = await searchParams;
+   return (
+      <Filter
+         key={`${from ?? ""}:${to ?? ""}:${idNumber ?? ""}`}
+         from={from}
+         to={to}
+         idNumber={idNumber}
+      />
+   );
+}
+
+export default async function Logs({
+   searchParams,
+}: {
+   searchParams: SearchParameters;
+}) {
    return (
       <div className="p-3 pb-25">
+         <Suspense>
+            <SuspendedFilter searchParams={searchParams} />
+         </Suspense>
          <div className="overflow-x-auto">
             <Table
                headers={[
@@ -52,10 +116,13 @@ export default async function Logs() {
                extraStyling="min-w-250"
             >
                <Suspense fallback={<FallbackRow />}>
-                  <Suspended />
+                  <Suspended searchParams={searchParams} />
                </Suspense>
             </Table>
          </div>
+         <Suspense>
+            <SuspendedPagination searchParams={searchParams} />
+         </Suspense>
       </div>
    );
 }
