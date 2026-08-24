@@ -9,6 +9,7 @@ import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import Filter from "./_components/Filter";
 import Pagination from "./_components/Pagination";
+import { File } from "lucide-react";
 
 type SearchParameters = Promise<{
    idNumber?: string;
@@ -30,6 +31,19 @@ async function Suspended({ searchParams }: { searchParams: SearchParameters }) {
       if (logsWithBorrower.error === "AUTH") redirect(adminLoginPage);
       return <>Error</>;
    }
+   if (logsWithBorrower.data.logs.length === 0)
+      return (
+         <tr>
+            <td colSpan={10} className="py-4">
+               <div className="mx-auto flex w-fit items-center gap-1 font-medium">
+                  <span>
+                     <File size={15} />
+                  </span>
+                  Empty
+               </div>
+            </td>
+         </tr>
+      );
 
    return logsWithBorrower.data.logs.map((row, i) => (
       <TableRow

@@ -5,6 +5,7 @@ import { getPendingBorrowerRecords } from "@/data-access-layer/PendingBorrowerRe
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import PendingBorrowerRows from "./PendingBorrowerRows";
+import { File } from "lucide-react";
 
 async function Suspended() {
    const pendingRecords = await getPendingBorrowerRecords();
@@ -12,6 +13,19 @@ async function Suspended() {
       if (pendingRecords.error === "AUTH") redirect(adminLoginPage);
       return <>Error</>;
    }
+   if (pendingRecords.data.length === 0)
+      return (
+         <tr>
+            <td colSpan={10} className="py-4">
+               <div className="mx-auto flex w-fit items-center gap-1 font-medium">
+                  <span>
+                     <File size={15} />
+                  </span>
+                  Empty
+               </div>
+            </td>
+         </tr>
+      );
    return <PendingBorrowerRows pendingRecords={pendingRecords.data} />;
 }
 

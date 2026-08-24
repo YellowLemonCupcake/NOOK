@@ -1,8 +1,7 @@
-import { Library, Nook1, Nook2 } from "@/components/Images";
+import { Library, Nook1 } from "@/components/Images";
 import Landing from "@/components/Landing";
 import { adminLoginPage } from "@/constants";
 import { Menu } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 
 export default async function Home() {

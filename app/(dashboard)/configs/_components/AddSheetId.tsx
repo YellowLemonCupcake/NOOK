@@ -1,21 +1,21 @@
 "use client";
 
 import setSheetIdAction from "@/actions/Configurations/SetSheetId";
-import { sheetIdRoute } from "@/constants";
 import clsx from "clsx";
 import { Copy, Link, LoaderCircle } from "lucide-react";
 import Image from "next/image";
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useState } from "react";
 import { toast } from "react-toastify";
 
 export function AddSheetId({
    serviceAccountEmail,
+   currentId,
 }: {
    serviceAccountEmail: string;
+   currentId: string;
 }) {
-   const [currentId, setCurrentId] = useState<string | null>(null);
-   const [sheetIdInput, setSheetIdInput] = useState("");
-   const edited = currentId !== sheetIdInput && currentId !== null;
+   const [sheetIdInput, setSheetIdInput] = useState(currentId);
+   const edited = currentId !== sheetIdInput;
 
    const [, formAction, isPending] = useActionState(async () => {
       if (isPending || !edited) return;
@@ -24,31 +24,8 @@ export function AddSheetId({
       if (res.ok) {
          toast.success("Successfully set Sheet ID");
          setSheetIdInput(res.data.id);
-         setCurrentId(res.data.id);
       } else toast.error(res.message);
    }, null);
-
-   useEffect(() => {
-      (async () => {
-         try {
-            const res = await fetch(sheetIdRoute);
-            const data:
-               { status: "error" } | { status: "success"; id: string } =
-               await res.json();
-            if (data.status === "error") {
-               setCurrentId("Something went wrong. Please try again later.");
-               setSheetIdInput("Something went wrong. Please try again later.");
-            } else {
-               setCurrentId(data.id);
-               setSheetIdInput(data.id);
-            }
-         } catch (e) {
-            console.error(e);
-            setCurrentId("Something went wrong. Please try again later.");
-            setSheetIdInput("Something went wrong. Please try again later.");
-         }
-      })();
-   }, []);
 
    return (
       <form className="font-inter max-w-150 select-none" action={formAction}>

@@ -38,6 +38,12 @@ export default async function createBorrowLog(
          select: { name: true, program: true, college: true, yearLevel: true },
       });
       const spreadsheetId = await getSpreadsheetId(session.user.id);
+      if (!spreadsheetId)
+         return {
+            ok: false,
+            error: "VALIDATION",
+            message: "Please provide a spreadsheet ID before continuing.",
+         };
       const appendResponse = await appendToCurrentMonthSheet(spreadsheetId, [
          [
             phDateString,

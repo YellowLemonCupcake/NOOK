@@ -1,10 +1,11 @@
 "use server";
+import { configurationsPage } from "@/constants";
 import { auth } from "@/lib/auth";
 import { sheetsService } from "@/lib/googlesheetsapi";
 import { prisma } from "@/lib/prisma";
 import { Result } from "@/lib/types";
 import { GaxiosError } from "gaxios";
-import { updateTag } from "next/cache";
+import { revalidatePath } from "next/cache";
 
 export default async function setSheetIdAction(
    id: string,
@@ -50,7 +51,7 @@ export default async function setSheetIdAction(
          },
       });
 
-      updateTag(`spreadsheetId:${session.user.id}`);
+      revalidatePath(configurationsPage);
 
       return {
          ok: true,

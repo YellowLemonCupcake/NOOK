@@ -28,9 +28,18 @@ export default async function importRecords(
       return {
          ok: false,
          error: "NOT_FOUND",
-         message: "Configurations not found",
+         message: "Please provide a spreadsheet ID before continuing.",
       };
    try {
+      const pendingRegistrationCount = await prisma.pendingRegistration.count();
+      if (pendingRegistrationCount > 0)
+         return {
+            ok: false,
+            error: "VALIDATION",
+            message:
+               "Please clear the pending registrations before continuing.",
+         };
+
       const result = await sheetsService.spreadsheets.values.get({
          spreadsheetId: user.configuration.spreadsheetId,
          range: `${sheetName}!${range}`,

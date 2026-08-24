@@ -8,7 +8,7 @@ import { ChangeEvent, useActionState, useState } from "react";
 import { toast } from "react-toastify";
 
 export default function ChangeEmail() {
-   const { status, data, update } = useSession();
+   const { data, update } = useSession();
    const [edited, setEdited] = useState<boolean>(false);
 
    const onAction = async (_: unknown, formData: FormData) => {

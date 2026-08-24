@@ -7,6 +7,7 @@ import { DialogProvider } from "./_components/DialogProvider";
 import BorrowerRows from "./_components/BorrowerRows";
 import Table from "@/components/table/table";
 import FallbackRow from "@/components/table/fallbackRow";
+import { File } from "lucide-react";
 
 async function Suspended() {
    const res = await getBorrowerRecords();
@@ -14,6 +15,19 @@ async function Suspended() {
       if (res.error === "AUTH") redirect(adminLoginPage);
       return <>Error</>;
    }
+   if (res.data.length === 0)
+      return (
+         <tr>
+            <td colSpan={10} className="py-4">
+               <div className="mx-auto flex w-fit items-center gap-1 font-medium">
+                  <span>
+                     <File size={15} />
+                  </span>
+                  Empty
+               </div>
+            </td>
+         </tr>
+      );
    return <BorrowerRows records={res.data} />;
 }
 

@@ -24,7 +24,6 @@ export default async function SettingsPage() {
                Account
             </p>
             <ChangeEmail />
-            <small className="text-white/80">(Not Final)</small>
             <ChangePassword />
          </div>
       </div>
