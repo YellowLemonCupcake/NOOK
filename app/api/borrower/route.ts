@@ -1,7 +1,7 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { Result } from "@/lib/types";
-import { cacheLife, cacheTag } from "next/cache";
+import { cacheLife, cacheTag, updateTag } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 
 type BorrowerInfo = {
@@ -66,4 +66,8 @@ async function getBorrower(idNumberQuery: string) {
    });
 
    return borrower;
+}
+
+export function updateBorrowerCache(idNumberQuery: string) {
+   updateTag(`borrower:${idNumberQuery}`);
 }

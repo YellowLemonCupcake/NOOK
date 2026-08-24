@@ -1,11 +1,12 @@
 "use server";
 
-import { borrowerRecordsPage } from "@/constants";
+import { updateBorrowerCache } from "@/app/api/borrower/route";
+import { borrowerRecordsPage, logsPage } from "@/constants";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { Result } from "@/lib/types";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
-import { revalidatePath, updateTag } from "next/cache";
+import { revalidatePath } from "next/cache";
 
 export default async function editBorrowerRecord(
    id: string,
@@ -33,7 +34,8 @@ export default async function editBorrowerRecord(
       });
 
       revalidatePath(borrowerRecordsPage);
-      updateTag(`borrower:${newRecord.idNumber}`);
+      revalidatePath(logsPage);
+      updateBorrowerCache(newRecord.idNumber);
       return { ok: true, data: { message: `Updated ${newRecord.idNumber}` } };
    } catch (e) {
       if (e instanceof PrismaClientKnownRequestError) {

@@ -43,30 +43,24 @@ export function AddSheetId({
             <span className="self-end">Google Sheet ID</span>
          </label>
          <div className="flex items-stretch gap-1.5">
-            {currentId === null ? (
-               <div className="my-2.25">
-                  <LoaderCircle className="animate-spin text-gray-600" />
-               </div>
-            ) : (
-               <div className="flex w-full max-w-125 items-center rounded-lg border border-gray-400">
-                  <span className="m-2">
-                     <Link size={18} />
-                  </span>
-                  <input
-                     spellCheck={false}
-                     type="text"
-                     name="sheetId"
-                     id="sheetId"
-                     value={sheetIdInput}
-                     onChange={(e) => {
-                        setSheetIdInput(e.target.value);
-                     }}
-                     placeholder="e.g. 1aBcD3fGhIjK..."
-                     required
-                     className="w-full self-stretch py-2 pr-2 focus:outline-0"
-                  />
-               </div>
-            )}
+            <div className="flex w-full max-w-125 items-center rounded-lg border border-gray-400">
+               <span className="m-2">
+                  <Link size={18} />
+               </span>
+               <input
+                  spellCheck={false}
+                  type="text"
+                  name="sheetId"
+                  id="sheetId"
+                  value={sheetIdInput}
+                  onChange={(e) => {
+                     setSheetIdInput(e.target.value);
+                  }}
+                  placeholder="e.g. 1aBcD3fGhIjK..."
+                  required
+                  className="w-full self-stretch py-2 pr-2 focus:outline-0"
+               />
+            </div>
             {edited && (
                <button
                   inert={isPending}

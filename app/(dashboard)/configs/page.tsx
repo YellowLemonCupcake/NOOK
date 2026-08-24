@@ -7,7 +7,7 @@ import getSpreadsheetId from "@/lib/getSpreadsheetId";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { adminLoginPage } from "@/constants";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, LoaderCircle } from "lucide-react";
 
 async function Suspended() {
    const session = await auth();
@@ -45,7 +45,13 @@ async function Suspended() {
 
 export default async function ConfigurationsPage() {
    return (
-      <Suspense>
+      <Suspense
+         fallback={
+            <div className="flex items-center gap-2 p-7 text-lg text-gray-700">
+               <LoaderCircle className="animate-spin" size={20} /> Loading . . .
+            </div>
+         }
+      >
          <Suspended />
       </Suspense>
    );
