@@ -1,5 +1,3 @@
-import { BorrowerModel } from "@/generated/prisma/models";
-
 export type Result<T> =
    | {
         ok: true;

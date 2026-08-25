@@ -1,37 +1,15 @@
 "use client";
-import clsx from "clsx";
-import { useState } from "react";
 import { Nook2 } from "./Images";
 //  https://herolearningcommons.vercel.app/
 
 function TopBorrowers() {
-   const [selected, setSelected] = useState<"all" | "student" | "college">(
-      "all",
-   );
-
    return (
       <div className="flex min-h-100 flex-col gap-2 px-4 sm:px-10 md:min-h-auto">
          <p className="border-yellow-primary font-inter border-l-8 px-2 text-xl font-bold">
             Top Borrowers
          </p>
          <div className="grow bg-[#34A853]/12">
-            <div className="bg-white-primary mt-6 space-x-2 p-2 px-6">
-               {/* {(["all", "student", "college"] as const).map((e, i) => (
-                  <button
-                     key={i}
-                     className={clsx(
-                        "font-inter rounded-xl px-4 py-1.5 text-sm font-medium",
-                        e.toLowerCase() === selected
-                           ? "bg-green-primary text-white-primary pointer-events-none"
-                           : "text-black",
-                     )}
-                     onClick={() => setSelected(e)}
-                  >
-                     {e[0].toUpperCase()}
-                     {e.slice(1)}
-                  </button>
-               ))} */}
-            </div>
+            <div className="bg-white-primary mt-6 space-x-2 p-2 px-6"></div>
          </div>
       </div>
    );
