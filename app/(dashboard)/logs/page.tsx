@@ -104,26 +104,16 @@ async function SuspendedFilter({
    );
 }
 
-async function SuspendedTableAndPagination({
+export default async function Logs({
    searchParams,
 }: {
    searchParams: SearchParameters;
 }) {
-   const { from, to, idNumber, page: pageParam } = await searchParams;
-   const page = Math.max(1, Number.parseInt(pageParam ?? "1", 10) || 1);
-   const logsWithBorrower = await getLogsWithBorrower(
-      idNumber,
-      from ? startOfDay(parseISO(from)) : undefined,
-      to ? endOfDay(parseISO(to)) : undefined,
-      page,
-   );
-   if (!logsWithBorrower.ok) {
-      if (logsWithBorrower.error === "AUTH") redirect(adminLoginPage);
-      return <>Error</>;
-   }
-
    return (
-      <>
+      <div className="p-3 pb-25">
+         <Suspense>
+            <SuspendedFilter searchParams={searchParams} />
+         </Suspense>
          <div className="overflow-x-auto">
             <Table
                headers={[
@@ -139,59 +129,13 @@ async function SuspendedTableAndPagination({
                ]}
                extraStyling="min-w-250"
             >
-               {logsWithBorrower.data.logs.length > 0 ? (
-                  logsWithBorrower.data.logs.map((row, i) => (
-                     <TableRow
-                        key={i}
-                        index={i}
-                        data={[
-                           toPHDateString(row.date),
-                           row.idNumber,
-                           row.borrower?.name,
-                           row.borrower?.program,
-                           row.borrower?.yearLevel,
-                           row.borrower?.college,
-                           row.bookBarcode,
-                           row.bookTitle,
-                           row.bookAuthor,
-                        ]}
-                     />
-                  ))
-               ) : (
-                  <tr>
-                     <td colSpan={10} className="py-4">
-                        <div className="mx-auto flex w-fit items-center gap-1 font-medium">
-                           <span>
-                              <File size={15} />
-                           </span>
-                           Empty
-                        </div>
-                     </td>
-                  </tr>
-               )}
+               <Suspense fallback={<FallbackRow />}>
+                  <Suspended searchParams={searchParams} />
+               </Suspense>
             </Table>
          </div>
-         <Pagination
-            page={page}
-            total={logsWithBorrower.data.total}
-            filters={{ idNumber, from, to }}
-         />
-      </>
-   );
-}
-
-export default async function Logs({
-   searchParams,
-}: {
-   searchParams: SearchParameters;
-}) {
-   return (
-      <div className="p-3 pb-25">
          <Suspense>
-            <SuspendedFilter searchParams={searchParams} />
-         </Suspense>
-         <Suspense>
-            <SuspendedTableAndPagination searchParams={searchParams} />
+            <SuspendedPagination searchParams={searchParams} />
          </Suspense>
       </div>
    );

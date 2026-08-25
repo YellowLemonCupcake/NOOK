@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { Result } from "@/lib/types";
 import { cacheLife } from "next/cache";
 
-export const LOGS_PAGE_SIZE = 2;
+export const LOGS_PAGE_SIZE = 20;
 
 type BorrowLogWithBorrower = BorrowLogModel & {
    borrower: BorrowerGetPayload<{

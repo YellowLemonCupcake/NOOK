@@ -12,7 +12,13 @@ import {
 } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
 import { usePathname, useRouter } from "next/navigation";
-import { Dispatch, SetStateAction, SubmitEvent, useState } from "react";
+import {
+   Dispatch,
+   SetStateAction,
+   SubmitEvent,
+   useState,
+   useTransition,
+} from "react";
 import clsx from "clsx";
 
 export function DatePicker({
@@ -71,6 +77,7 @@ export default function Filter({
       initialTo ? parseISO(initialTo) : undefined,
    );
    const [idNumber, setIdNumber] = useState(initialIdNumber ?? "");
+   const [isPending, startTransition] = useTransition();
 
    function applyFilters(event: SubmitEvent<HTMLFormElement>) {
       event.preventDefault();
@@ -81,14 +88,18 @@ export default function Filter({
       if (to) params.set("to", format(to, "yyyy-MM-dd"));
 
       const query = params.toString();
-      router.replace(query ? `${pathname}?${query}` : pathname);
+      startTransition(() => {
+         router.replace(query ? `${pathname}?${query}` : pathname);
+      });
    }
 
    function clearFilters() {
       setFrom(undefined);
       setTo(undefined);
       setIdNumber("");
-      router.replace(pathname);
+      startTransition(() => {
+         router.replace(pathname);
+      });
    }
 
    return (
@@ -124,16 +135,21 @@ export default function Filter({
             <div className="flex gap-2">
                <Button
                   type="submit"
+                  disabled={isPending}
                   className="bg-green-primary flex items-center gap-1 rounded-md px-2 py-1 font-medium text-white shadow-sm"
                >
                   <span>
-                     <FilterIcon size={20} />
+                     <FilterIcon
+                        size={20}
+                        className={isPending ? "animate-pulse" : undefined}
+                     />
                   </span>
-                  Filter
+                  {isPending ? "Filtering..." : "Filter"}
                </Button>
                {(initialIdNumber || initialFrom || initialTo) && (
                   <Button
                      type="button"
+                     disabled={isPending}
                      onClick={clearFilters}
                      className="flex items-center gap-1 rounded-md bg-transparent px-2 py-1 font-medium text-black hover:bg-transparent"
                   >
