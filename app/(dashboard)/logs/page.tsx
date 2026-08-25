@@ -131,14 +131,14 @@ export default async function Logs({
             >
                {/* Don't mind my technique */}
                <Suspense fallback={<FallbackRow />}>
-                  {(async () => {
+                  {(async () => (
                      <Suspense
                         key={JSON.stringify(await searchParams)}
                         fallback={<FallbackRow />}
                      >
                         <Suspended searchParams={searchParams} />
-                     </Suspense>;
-                  })()}
+                     </Suspense>
+                  ))()}
                </Suspense>
             </Table>
          </div>
