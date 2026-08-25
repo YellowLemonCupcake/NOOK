@@ -15,7 +15,7 @@ export default function TableRow({
          )}
       >
          {data.map((d, i) => (
-            <td key={i} className="py-2">
+            <td key={i} className="p-2">
                {d}
             </td>
          ))}

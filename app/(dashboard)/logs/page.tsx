@@ -9,7 +9,7 @@ import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import Filter from "./_components/Filter";
 import { File } from "lucide-react";
-import Pagination from "@/components/Pagination";
+import Pagination from "./_components/Pagination";
 
 type SearchParameters = Promise<{
    idNumber?: string;
