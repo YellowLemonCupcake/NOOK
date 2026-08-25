@@ -109,11 +109,10 @@ export default async function Logs({
 }: {
    searchParams: SearchParameters;
 }) {
-   const newKey = JSON.stringify(await searchParams);
    return (
       <div className="p-3 pb-25">
          <Suspense>
-            <SuspendedFilter key={newKey} searchParams={searchParams} />
+            <SuspendedFilter searchParams={searchParams} />
          </Suspense>
          <div className="overflow-x-auto">
             <Table
@@ -131,13 +130,20 @@ export default async function Logs({
                extraStyling="min-w-250"
             >
                {/* Don't mind my technique */}
-               <Suspense key={newKey} fallback={<FallbackRow />}>
-                  <Suspended key={newKey} searchParams={searchParams} />
+               <Suspense fallback={<FallbackRow />}>
+                  {(async () => (
+                     <Suspense
+                        key={JSON.stringify(await searchParams)}
+                        fallback={<FallbackRow />}
+                     >
+                        <Suspended searchParams={searchParams} />
+                     </Suspense>
+                  ))()}
                </Suspense>
             </Table>
          </div>
          <Suspense>
-            <SuspendedPagination key={newKey} searchParams={searchParams} />
+            <SuspendedPagination searchParams={searchParams} />
          </Suspense>
       </div>
    );
