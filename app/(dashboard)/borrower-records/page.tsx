@@ -38,9 +38,9 @@ export default async function BorrowerRecordsPage() {
             <Table
                headers={[
                   "No.",
-                  "ID-Number",
+                  "ID",
                   "Name",
-                  "Course",
+                  "Program",
                   "Year",
                   "College",
                   "Action",

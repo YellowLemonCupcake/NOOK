@@ -118,12 +118,12 @@ export default async function Logs({
             <Table
                headers={[
                   "Date",
-                  "ID-Number",
+                  "ID",
                   "Name",
-                  "Course",
+                  "Program",
                   "Year",
                   "College",
-                  "Book Barcode",
+                  "Barcode",
                   "Title",
                   "Author",
                ]}
