@@ -13,8 +13,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { usePathname, useRouter } from "next/navigation";
 import {
-   Dispatch,
-   SetStateAction,
+   type Dispatch,
+   type SetStateAction,
    SubmitEvent,
    useState,
    useTransition,
@@ -77,7 +77,8 @@ export default function Filter({
       initialTo ? parseISO(initialTo) : undefined,
    );
    const [idNumber, setIdNumber] = useState(initialIdNumber ?? "");
-   const [isPending, startTransition] = useTransition();
+   const [isPendingFiltering, startTransitionFiltering] = useTransition();
+   const [isPendingClearing, startTransitionClearing] = useTransition();
 
    function applyFilters(event: SubmitEvent<HTMLFormElement>) {
       event.preventDefault();
@@ -88,7 +89,7 @@ export default function Filter({
       if (to) params.set("to", format(to, "yyyy-MM-dd"));
 
       const query = params.toString();
-      startTransition(() => {
+      startTransitionFiltering(() => {
          router.replace(query ? `${pathname}?${query}` : pathname);
       });
    }
@@ -97,7 +98,7 @@ export default function Filter({
       setFrom(undefined);
       setTo(undefined);
       setIdNumber("");
-      startTransition(() => {
+      startTransitionClearing(() => {
          router.replace(pathname);
       });
    }
@@ -135,21 +136,25 @@ export default function Filter({
             <div className="flex gap-2">
                <Button
                   type="submit"
-                  disabled={isPending}
+                  disabled={isPendingFiltering || isPendingClearing}
                   className="bg-green-primary flex items-center gap-1 rounded-md px-2 py-1 font-medium text-white shadow-sm"
                >
                   <span>
                      <FilterIcon
                         size={20}
-                        className={isPending ? "animate-pulse" : undefined}
+                        className={
+                           isPendingFiltering || isPendingClearing
+                              ? "animate-pulse"
+                              : undefined
+                        }
                      />
                   </span>
-                  {isPending ? "Filtering..." : "Filter"}
+                  {isPendingFiltering ? "Filtering..." : "Filter"}
                </Button>
                {(initialIdNumber || initialFrom || initialTo) && (
                   <Button
                      type="button"
-                     disabled={isPending}
+                     disabled={isPendingFiltering || isPendingClearing}
                      onClick={clearFilters}
                      className="flex items-center gap-1 rounded-md bg-transparent px-2 py-1 font-medium text-black hover:bg-transparent"
                   >
