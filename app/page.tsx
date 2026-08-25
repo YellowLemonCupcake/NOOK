@@ -48,13 +48,19 @@ export default function Home() {
                isOpen ? "h-39" : "h-0",
             )}
          >
-            <Link href={""} className="relative block w-full py-3 text-center">
+            <Link
+               href={""}
+               className="relative block w-full py-3 text-center active:bg-gray-100"
+            >
                Home
                <span className="absolute inset-y-0 right-4 flex items-center">
                   <ChevronRight />
                </span>
             </Link>
-            <Link href={""} className="relative block w-full py-3 text-center">
+            <Link
+               href={""}
+               className="relative block w-full py-3 text-center active:bg-gray-100"
+            >
                Search
                <span className="absolute inset-y-0 right-4 flex items-center">
                   <ChevronRight />
@@ -62,7 +68,7 @@ export default function Home() {
             </Link>
             <Link
                href={adminLoginPage}
-               className="relative block w-full py-3 text-center"
+               className="relative block w-full py-3 text-center active:bg-gray-100"
             >
                Admin
                <span className="absolute inset-y-0 right-4 flex items-center">
