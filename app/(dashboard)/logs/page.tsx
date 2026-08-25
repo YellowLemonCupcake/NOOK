@@ -104,7 +104,6 @@ async function SuspendedFilter({
    );
 }
 
-export const instant = false;
 export default async function Logs({
    searchParams,
 }: {
