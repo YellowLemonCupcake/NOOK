@@ -3,7 +3,7 @@ import { BorrowerGetPayload, BorrowLogModel } from "@/generated/prisma/models";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { Result } from "@/lib/types";
-import { cacheLife } from "next/cache";
+// import { cacheLife } from "next/cache";
 
 export const LOGS_PAGE_SIZE = 20;
 
@@ -65,8 +65,8 @@ async function getCachedLogsWithBorrower(
    from?: Date,
    to?: Date,
 ): Promise<PaginatedBorrowLogs> {
-   "use cache";
-   cacheLife("minutes");
+   // "use cache";
+   // cacheLife("minutes");
 
    const where = {
       idNumber,
