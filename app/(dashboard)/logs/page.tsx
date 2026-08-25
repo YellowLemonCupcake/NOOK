@@ -115,24 +115,36 @@ export default async function Logs({
             <SuspendedFilter searchParams={searchParams} />
          </Suspense>
          <div className="overflow-x-auto">
-            <Table
-               headers={[
-                  "Date",
-                  "ID-Number",
-                  "Name",
-                  "Course",
-                  "Year",
-                  "College",
-                  "Book Barcode",
-                  "Title",
-                  "Author",
-               ]}
-               extraStyling="min-w-250"
-            >
-               <Suspense fallback={<FallbackRow />}>
-                  <Suspended searchParams={searchParams} />
-               </Suspense>
-            </Table>
+            <Suspense>
+               {/* Don't mind my technique */}
+               {(async () => {
+                  const resolvedSearchParams = JSON.stringify(
+                     await searchParams,
+                  );
+
+                  return (
+                     <Table
+                        key={resolvedSearchParams}
+                        headers={[
+                           "Date",
+                           "ID-Number",
+                           "Name",
+                           "Course",
+                           "Year",
+                           "College",
+                           "Book Barcode",
+                           "Title",
+                           "Author",
+                        ]}
+                        extraStyling="min-w-250"
+                     >
+                        <Suspense fallback={<FallbackRow />}>
+                           <Suspended searchParams={searchParams} />
+                        </Suspense>
+                     </Table>
+                  );
+               })()}
+            </Suspense>
          </div>
          <Suspense>
             <SuspendedPagination searchParams={searchParams} />
