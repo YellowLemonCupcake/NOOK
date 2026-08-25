@@ -104,11 +104,13 @@ async function SuspendedFilter({
    );
 }
 
+export const instant = false;
 export default async function Logs({
    searchParams,
 }: {
    searchParams: SearchParameters;
 }) {
+   const newKey = JSON.stringify(await searchParams);
    return (
       <div className="p-3 pb-25">
          <Suspense>
@@ -130,15 +132,8 @@ export default async function Logs({
                extraStyling="min-w-250"
             >
                {/* Don't mind my technique */}
-               <Suspense fallback={<FallbackRow />}>
-                  {(async () => (
-                     <Suspense
-                        key={JSON.stringify(await searchParams)}
-                        fallback={<FallbackRow />}
-                     >
-                        <Suspended searchParams={searchParams} />
-                     </Suspense>
-                  ))()}
+               <Suspense key={newKey} fallback={<FallbackRow />}>
+                  <Suspended searchParams={searchParams} />
                </Suspense>
             </Table>
          </div>
