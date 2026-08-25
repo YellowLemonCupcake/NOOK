@@ -19,7 +19,6 @@ type SearchParameters = Promise<{
 }>;
 
 async function Suspended({ searchParams }: { searchParams: SearchParameters }) {
-   await new Promise((resolve) => setTimeout(resolve, 1000));
    const { from, to, idNumber, page: pageParam } = await searchParams;
    const page = Math.max(1, Number.parseInt(pageParam ?? "1", 10) || 1);
    const logsWithBorrower = await getLogsWithBorrower(
@@ -116,38 +115,32 @@ export default async function Logs({
             <SuspendedFilter searchParams={searchParams} />
          </Suspense>
          <div className="overflow-x-auto">
-            <Suspense fallback={<>test</>}>
+            <Table
+               headers={[
+                  "Date",
+                  "ID-Number",
+                  "Name",
+                  "Course",
+                  "Year",
+                  "College",
+                  "Book Barcode",
+                  "Title",
+                  "Author",
+               ]}
+               extraStyling="min-w-250"
+            >
                {/* Don't mind my technique */}
-               {(async () => {
-                  const resolvedSearchParams = JSON.stringify(
-                     await searchParams,
-                  );
-
-                  return (
-                     <Table
-                        headers={[
-                           "Date",
-                           "ID-Number",
-                           "Name",
-                           "Course",
-                           "Year",
-                           "College",
-                           "Book Barcode",
-                           "Title",
-                           "Author",
-                        ]}
-                        extraStyling="min-w-250"
+               <Suspense fallback={<FallbackRow />}>
+                  {(async () => {
+                     <Suspense
+                        key={JSON.stringify(await searchParams)}
+                        fallback={<FallbackRow />}
                      >
-                        <Suspense
-                           key={resolvedSearchParams}
-                           fallback={<FallbackRow />}
-                        >
-                           <Suspended searchParams={searchParams} />
-                        </Suspense>
-                     </Table>
-                  );
-               })()}
-            </Suspense>
+                        <Suspended searchParams={searchParams} />
+                     </Suspense>;
+                  })()}
+               </Suspense>
+            </Table>
          </div>
          <Suspense>
             <SuspendedPagination searchParams={searchParams} />
