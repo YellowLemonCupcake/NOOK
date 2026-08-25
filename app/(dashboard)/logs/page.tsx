@@ -147,9 +147,14 @@ export default async function Logs({
             <SuspendedFilter searchParams={searchParams} />
          </Suspense>
          <div className="overflow-x-auto">
-            <Suspense fallback={<FallbackRow />}>
-               <Suspended searchParams={searchParams} />
-            </Suspense>
+            {(async () => (
+               <Suspense
+                  key={JSON.stringify(await searchParams)}
+                  fallback={<FallbackRow />}
+               >
+                  <Suspended searchParams={searchParams} />
+               </Suspense>
+            ))()}
          </div>
          <Suspense>
             <SuspendedPagination searchParams={searchParams} />
