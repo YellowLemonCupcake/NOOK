@@ -114,7 +114,7 @@ export default async function Logs({
    return (
       <div className="p-3 pb-25">
          <Suspense>
-            <SuspendedFilter searchParams={searchParams} />
+            <SuspendedFilter key={newKey} searchParams={searchParams} />
          </Suspense>
          <div className="overflow-x-auto">
             <Table
@@ -133,12 +133,12 @@ export default async function Logs({
             >
                {/* Don't mind my technique */}
                <Suspense key={newKey} fallback={<FallbackRow />}>
-                  <Suspended searchParams={searchParams} />
+                  <Suspended key={newKey} searchParams={searchParams} />
                </Suspense>
             </Table>
          </div>
          <Suspense>
-            <SuspendedPagination searchParams={searchParams} />
+            <SuspendedPagination key={newKey} searchParams={searchParams} />
          </Suspense>
       </div>
    );
