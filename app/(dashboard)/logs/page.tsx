@@ -19,6 +19,7 @@ type SearchParameters = Promise<{
 }>;
 
 async function Suspended({ searchParams }: { searchParams: SearchParameters }) {
+   await new Promise((resolve) => setTimeout(resolve, 1000));
    const { from, to, idNumber, page: pageParam } = await searchParams;
    const page = Math.max(1, Number.parseInt(pageParam ?? "1", 10) || 1);
    const logsWithBorrower = await getLogsWithBorrower(
@@ -115,7 +116,7 @@ export default async function Logs({
             <SuspendedFilter searchParams={searchParams} />
          </Suspense>
          <div className="overflow-x-auto">
-            <Suspense>
+            <Suspense fallback={<>test</>}>
                {/* Don't mind my technique */}
                {(async () => {
                   const resolvedSearchParams = JSON.stringify(
@@ -124,7 +125,6 @@ export default async function Logs({
 
                   return (
                      <Table
-                        key={resolvedSearchParams}
                         headers={[
                            "Date",
                            "ID-Number",
@@ -138,7 +138,10 @@ export default async function Logs({
                         ]}
                         extraStyling="min-w-250"
                      >
-                        <Suspense fallback={<FallbackRow />}>
+                        <Suspense
+                           key={resolvedSearchParams}
+                           fallback={<FallbackRow />}
+                        >
                            <Suspended searchParams={searchParams} />
                         </Suspense>
                      </Table>
