@@ -113,19 +113,17 @@ export default function Filter({
 
    return (
       <div className="mb-2 overflow-x-auto p-1">
-         <div className="flex items-center justify-between">
-            <Button
-               onClick={() => setShowFilter((prev) => !prev)}
-               className={
-                  "bg-white-primary flex items-center gap-2 text-black hover:bg-black/5"
-               }
-            >
-               <span>
-                  <ListFilter size={20} />
-               </span>
-               Filters
-            </Button>
-         </div>
+         <Button
+            onClick={() => setShowFilter((prev) => !prev)}
+            className={
+               "bg-white-primary flex items-center gap-2 text-black hover:bg-black/5"
+            }
+         >
+            <span>
+               <ListFilter size={20} />
+            </span>
+            Filters
+         </Button>
          <form
             className={clsx(
                "mt-2 flex flex-wrap gap-2",

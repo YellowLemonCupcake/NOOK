@@ -18,5 +18,3 @@ export type Result<T> =
            | "OTHER"; // catch-all for unexpected errors
         message: string;
      };
-
-export type BorrowerRecord = BorrowerModel;

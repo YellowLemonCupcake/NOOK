@@ -31,7 +31,7 @@ async function Suspended() {
 
 export default function PendingRegistrationPage() {
    return (
-      <>
+      <div className="overflow-x-auto">
          <Table
             headers={[
                "ID-Number",
@@ -45,6 +45,6 @@ export default function PendingRegistrationPage() {
                <Suspended />
             </Suspense>
          </Table>
-      </>
+      </div>
    );
 }

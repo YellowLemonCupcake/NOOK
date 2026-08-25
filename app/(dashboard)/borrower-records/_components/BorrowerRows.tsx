@@ -1,6 +1,5 @@
 "use client";
 
-import { BorrowerRecord } from "@/lib/types";
 import clsx from "clsx";
 import { Check, Edit, LoaderCircle, Trash2, X } from "lucide-react";
 import { ChangeEvent, useActionState, useRef, useState } from "react";
@@ -15,6 +14,7 @@ import { toast } from "react-toastify";
 import deleteBorrowerRecord from "@/actions/BorrowerRecords/deleteRecord";
 import TableRow from "@/components/table/tableRow";
 import { programs } from "@/constants";
+import { BorrowerModel } from "@/generated/prisma/models";
 
 type EditInfo = {
    id: string;
@@ -31,7 +31,7 @@ function BorrowerRow({
    onEdit,
 }: {
    index: number;
-   borrowerRecord: BorrowerRecord;
+   borrowerRecord: BorrowerModel;
    onEdit: () => void;
 }) {
    const [confirmingDelete, setConfirmingDelete] = useState(false);
@@ -101,8 +101,10 @@ function BorrowerRow({
 
 export default function BorrowerRecords({
    records,
+   startIndex = 0,
 }: {
-   records: BorrowerRecord[];
+   records: BorrowerModel[];
+   startIndex?: number;
 }) {
    const editRecordDialogRef = useRef<HTMLDialogElement>(null);
    const { desktop } = useSidebar();
@@ -179,7 +181,7 @@ export default function BorrowerRecords({
          {records.map((record, i) => (
             <BorrowerRow
                key={record.id}
-               index={i + 1}
+               index={startIndex + i + 1}
                borrowerRecord={record}
                onEdit={() =>
                   editNewRow({

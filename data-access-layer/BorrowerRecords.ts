@@ -2,16 +2,38 @@ import { Prisma } from "@/generated/prisma/client";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { cacheLife } from "next/cache";
-import type { Result, BorrowerRecord } from "@/lib/types";
+import type { Result } from "@/lib/types";
+import { BorrowerModel } from "@/generated/prisma/models";
 
-export async function getBorrowerRecords(): Promise<Result<BorrowerRecord[]>> {
+export const BORROWERS_PAGE_SIZE = 20;
+
+type PaginatedBorrowers = {
+   borrowers: BorrowerModel[];
+   total: number;
+};
+
+export async function getBorrowerRecords(
+   idNumber?: string,
+   name?: string,
+   program?: string,
+   college?: string,
+   page = 1,
+   pageSize = BORROWERS_PAGE_SIZE,
+): Promise<Result<PaginatedBorrowers>> {
    const session = await auth();
    if (!session?.user) {
       return { ok: false, error: "AUTH", message: "Unauthorized" };
    }
 
    try {
-      const records = await getCachedBorrowerRecords();
+      const records = await getCachedBorrowerRecords(
+         idNumber,
+         name,
+         program,
+         college,
+         page,
+         pageSize,
+      );
       return { ok: true, data: records };
    } catch (e) {
       console.error("Error on getStudentRecords()", e);
@@ -26,13 +48,35 @@ export async function getBorrowerRecords(): Promise<Result<BorrowerRecord[]>> {
    }
 }
 
-async function getCachedBorrowerRecords(): Promise<BorrowerRecord[]> {
+async function getCachedBorrowerRecords(
+   idNumber?: string,
+   name?: string,
+   program?: string,
+   college?: string,
+   page = 1,
+   pageSize = BORROWERS_PAGE_SIZE,
+): Promise<PaginatedBorrowers> {
    "use cache";
    cacheLife("days");
 
-   return prisma.borrower.findMany({
-      orderBy: { createdAt: "asc" },
-   });
+   const where = {
+      idNumber,
+      name: name ? { contains: name, mode: "insensitive" as const } : undefined,
+      program,
+      college,
+   };
+
+   const [total, borrowers] = await Promise.all([
+      prisma.borrower.count({ where }),
+      prisma.borrower.findMany({
+         where,
+         skip: (page - 1) * pageSize,
+         take: pageSize,
+         orderBy: { createdAt: "asc" },
+      }),
+   ]);
+
+   return { borrowers, total };
 }
 
 export async function getBorrowerRecordsCount(): Promise<Result<number>> {
@@ -40,7 +84,6 @@ export async function getBorrowerRecordsCount(): Promise<Result<number>> {
    if (!session?.user) {
       return { ok: false, error: "AUTH", message: "Unauthorized" };
    }
-
    try {
       const count = await getCachedBorrowerRecordsCount();
       return { ok: true, data: count };
