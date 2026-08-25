@@ -33,35 +33,67 @@ async function Suspended({ searchParams }: { searchParams: SearchParameters }) {
    }
    if (logsWithBorrower.data.logs.length === 0)
       return (
-         <tr>
-            <td colSpan={10} className="py-4">
-               <div className="mx-auto flex w-fit items-center gap-1 font-medium">
-                  <span>
-                     <File size={15} />
-                  </span>
-                  Empty
-               </div>
-            </td>
-         </tr>
+         <Table
+            headers={[
+               "Date",
+               "ID-Number",
+               "Name",
+               "Course",
+               "Year",
+               "College",
+               "Book Barcode",
+               "Title",
+               "Author",
+            ]}
+            extraStyling="min-w-250"
+         >
+            <tr>
+               <td colSpan={10} className="py-4">
+                  <div className="mx-auto flex w-fit items-center gap-1 font-medium">
+                     <span>
+                        <File size={15} />
+                     </span>
+                     Empty
+                  </div>
+               </td>
+            </tr>
+         </Table>
       );
 
-   return logsWithBorrower.data.logs.map((row, i) => (
-      <TableRow
-         key={i}
-         index={i}
-         data={[
-            toPHDateString(row.date),
-            row.idNumber,
-            row.borrower?.name,
-            row.borrower?.program,
-            row.borrower?.yearLevel,
-            row.borrower?.college,
-            row.bookBarcode,
-            row.bookTitle,
-            row.bookAuthor,
+   return (
+      <Table
+         headers={[
+            "Date",
+            "ID-Number",
+            "Name",
+            "Course",
+            "Year",
+            "College",
+            "Book Barcode",
+            "Title",
+            "Author",
          ]}
-      />
-   ));
+         extraStyling="min-w-250"
+      >
+         {logsWithBorrower.data.logs.map((row, i) => (
+            <TableRow
+               key={i}
+               index={i}
+               data={[
+                  toPHDateString(row.date),
+                  row.idNumber,
+                  row.borrower?.name,
+                  row.borrower?.program,
+                  row.borrower?.yearLevel,
+                  row.borrower?.college,
+                  row.bookBarcode,
+                  row.bookTitle,
+                  row.bookAuthor,
+               ]}
+            />
+         ))}
+      </Table>
+   );
 }
 
 async function SuspendedPagination({
@@ -115,24 +147,9 @@ export default async function Logs({
             <SuspendedFilter searchParams={searchParams} />
          </Suspense>
          <div className="overflow-x-auto">
-            <Table
-               headers={[
-                  "Date",
-                  "ID-Number",
-                  "Name",
-                  "Course",
-                  "Year",
-                  "College",
-                  "Book Barcode",
-                  "Title",
-                  "Author",
-               ]}
-               extraStyling="min-w-250"
-            >
-               <Suspense fallback={<FallbackRow />}>
-                  <Suspended searchParams={searchParams} />
-               </Suspense>
-            </Table>
+            <Suspense fallback={<FallbackRow />}>
+               <Suspended searchParams={searchParams} />
+            </Suspense>
          </div>
          <Suspense>
             <SuspendedPagination searchParams={searchParams} />
