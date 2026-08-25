@@ -8,8 +8,8 @@ import { endOfDay, parseISO, startOfDay } from "date-fns";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import Filter from "./_components/Filter";
-import Pagination from "./_components/Pagination";
 import { File } from "lucide-react";
+import Pagination from "@/components/Pagination";
 
 type SearchParameters = Promise<{
    idNumber?: string;

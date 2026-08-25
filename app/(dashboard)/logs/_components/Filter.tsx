@@ -1,7 +1,13 @@
 "use client";
 
 import { format, parseISO } from "date-fns";
-import { ChevronDownIcon, FilterIcon, ListFilter, X } from "lucide-react";
+import {
+   ChevronDownIcon,
+   FilterIcon,
+   ListFilter,
+   LoaderCircle,
+   X,
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -82,6 +88,8 @@ export default function Filter({
 
    function applyFilters(event: SubmitEvent<HTMLFormElement>) {
       event.preventDefault();
+      if (isPendingFiltering || isPendingClearing) return;
+
       const params = new URLSearchParams();
 
       if (idNumber.trim()) params.set("idNumber", idNumber.trim());
@@ -137,17 +145,14 @@ export default function Filter({
                <Button
                   type="submit"
                   disabled={isPendingFiltering || isPendingClearing}
-                  className="bg-green-primary flex items-center gap-1 rounded-md px-2 py-1 font-medium text-white shadow-sm"
+                  className="bg-green-primary hover:bg-green-primary flex items-center gap-1 rounded-md px-2 py-1 font-medium text-white shadow-sm hover:brightness-120"
                >
                   <span>
-                     <FilterIcon
-                        size={20}
-                        className={
-                           isPendingFiltering || isPendingClearing
-                              ? "animate-pulse"
-                              : undefined
-                        }
-                     />
+                     {isPendingFiltering ? (
+                        <LoaderCircle size={20} className="animate-spin" />
+                     ) : (
+                        <FilterIcon size={20} />
+                     )}
                   </span>
                   {isPendingFiltering ? "Filtering..." : "Filter"}
                </Button>
