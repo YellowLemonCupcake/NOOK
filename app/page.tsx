@@ -44,7 +44,7 @@ export default function Home() {
          </div>
          <nav
             className={clsx(
-               "font-inter bg-white-primary absolute inset-x-0 top-15 overflow-y-hidden text-lg font-medium shadow-md transition-[height] duration-300 sm:hidden",
+               "font-inter bg-white-primary fixed inset-x-0 top-14 overflow-y-hidden text-lg font-medium shadow-md transition-[height] duration-300 sm:hidden",
                isOpen ? "h-39" : "h-0",
             )}
          >
