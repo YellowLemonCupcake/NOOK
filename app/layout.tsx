@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Funnel_Sans, Roboto, Geist } from "next/font/google";
 import "./globals.css";
 import clsx from "clsx";
-import { AuthProvider } from "./providers";
+import { AuthProvider } from "./sessionProvider";
 import { ToastContainer } from "react-toastify";
 import { cn } from "@/lib/utils";
 

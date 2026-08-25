@@ -29,7 +29,7 @@ export default async function AdminLoginPage() {
             <Nook1
                width={408}
                height={174}
-               className="absolute inset-0 m-auto max-w-90 px-6"
+               className="absolute inset-0 m-auto max-w-50 px-6 md:max-w-70 lg:max-w-90"
             />
          </section>
          <Suspense>

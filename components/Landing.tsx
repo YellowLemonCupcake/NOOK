@@ -10,13 +10,13 @@ function TopBorrowers() {
    );
 
    return (
-      <div className="flex flex-col gap-2 px-10">
+      <div className="flex min-h-100 flex-col gap-2 px-4 sm:px-10 md:min-h-auto">
          <p className="border-yellow-primary font-inter border-l-8 px-2 text-xl font-bold">
             Top Borrowers
          </p>
          <div className="grow bg-[#34A853]/12">
             <div className="bg-white-primary mt-6 space-x-2 p-2 px-6">
-               {(["all", "student", "college"] as const).map((e, i) => (
+               {/* {(["all", "student", "college"] as const).map((e, i) => (
                   <button
                      key={i}
                      className={clsx(
@@ -30,7 +30,7 @@ function TopBorrowers() {
                      {e[0].toUpperCase()}
                      {e.slice(1)}
                   </button>
-               ))}
+               ))} */}
             </div>
          </div>
       </div>
@@ -39,8 +39,8 @@ function TopBorrowers() {
 
 export default function Landing() {
    return (
-      <div className="my-auto hidden grid-cols-2 bg-white py-7 sm:grid">
-         <div className="flex flex-col items-center space-y-7 px-2 py-8">
+      <div className="my-auto grid grid-cols-1 gap-y-6 bg-white py-7 md:grid-cols-2">
+         <div className="flex flex-col items-center space-y-7 px-4 py-8">
             <Nook2 width={331} height={142} />
             <p
                className="font-funnel-sans max-w-82.75 text-justify"

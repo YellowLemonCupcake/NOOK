@@ -119,7 +119,7 @@ export default function Login() {
 
    return (
       status === "unauthenticated" && (
-         <section className="flex h-dvh w-full min-w-60 flex-col overflow-x-auto bg-[#D2E0D7] md:w-90">
+         <section className="flex h-dvh w-full min-w-60 flex-col overflow-x-auto bg-[#D2E0D7] md:w-100">
             <div className="bg-white-primary flex h-60 shrink-0 flex-col justify-end px-7 py-10 shadow-[0_4px_4px_rgba(0,0,0,0.25)]">
                <h1
                   className="font-inter font-bold"
