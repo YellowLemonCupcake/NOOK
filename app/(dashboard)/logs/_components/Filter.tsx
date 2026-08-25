@@ -81,14 +81,14 @@ export default function Filter({
       if (to) params.set("to", format(to, "yyyy-MM-dd"));
 
       const query = params.toString();
-      router.push(query ? `${pathname}?${query}` : pathname);
+      router.replace(query ? `${pathname}?${query}` : pathname);
    }
 
    function clearFilters() {
       setFrom(undefined);
       setTo(undefined);
       setIdNumber("");
-      router.push(pathname);
+      router.replace(pathname);
    }
 
    return (
