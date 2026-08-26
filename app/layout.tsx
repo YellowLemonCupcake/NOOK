@@ -1,5 +1,11 @@
 import type { Metadata } from "next";
-import { Inter, Funnel_Sans, Roboto, Geist } from "next/font/google";
+import {
+   Inter,
+   Funnel_Sans,
+   Roboto,
+   Geist,
+   IBM_Plex_Sans,
+} from "next/font/google";
 import "./globals.css";
 import clsx from "clsx";
 import { AuthProvider } from "./sessionProvider";
@@ -21,6 +27,10 @@ const roboto = Roboto({
    variable: "--font-roboto",
    subsets: ["latin"],
 });
+const plexSans = IBM_Plex_Sans({
+   variable: "--font-plex-sans",
+   subsets: ["latin"],
+});
 
 export const metadata: Metadata = {
    title: "Nook",
@@ -36,6 +46,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
                funnelSans.variable,
                inter.variable,
                roboto.variable,
+               plexSans.variable,
                "h-full antialiased",
             ),
             "font-sans",

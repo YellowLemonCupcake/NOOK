@@ -1,15 +1,31 @@
 "use client";
 import { Nook2 } from "./Images";
+import TopBorrowerTable from "./TopBorrowerTable";
 //  https://herolearningcommons.vercel.app/
 
 function TopBorrowers() {
    return (
-      <div className="flex min-h-100 flex-col gap-2 px-4 sm:px-10 md:min-h-auto">
-         <p className="border-yellow-primary font-inter border-l-8 px-2 text-xl font-bold">
+      <div className="flex min-h-100 flex-col px-4 sm:px-10 md:min-h-auto">
+         <p className="border-yellow-primary font-inter mb-2 border-l-8 px-2 text-xl font-bold">
             Top Borrowers
          </p>
+         <div className="h-5 bg-[#34A853]/12"></div>
+         <div className="bg-white-primary h-10 space-x-2 p-2 px-6"></div>
          <div className="grow bg-[#34A853]/12">
-            <div className="bg-white-primary mt-6 space-x-2 p-2 px-6"></div>
+            <TopBorrowerTable
+               topBorrowers={[
+                  { _count: { bookBarcode: 20 }, idNumber: "241-01080" },
+                  { _count: { bookBarcode: 18 }, idNumber: "241-01234" },
+                  { _count: { bookBarcode: 15 }, idNumber: "241-01235" },
+                  { _count: { bookBarcode: 13 }, idNumber: "241-01236" },
+                  { _count: { bookBarcode: 12 }, idNumber: "241-01237" },
+                  { _count: { bookBarcode: 8 }, idNumber: "241-01238" },
+                  { _count: { bookBarcode: 5 }, idNumber: "241-01239" },
+                  { _count: { bookBarcode: 3 }, idNumber: "241-01210" },
+                  { _count: { bookBarcode: 2 }, idNumber: "241-01211" },
+                  { _count: { bookBarcode: 1 }, idNumber: "241-01212" },
+               ]}
+            />
          </div>
       </div>
    );

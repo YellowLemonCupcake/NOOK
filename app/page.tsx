@@ -11,8 +11,8 @@ import { useState } from "react";
 export default function Home() {
    const [isOpen, setIsOpen] = useState(false);
    return (
-      <main className="relative select-none">
-         <nav className="bg-white-primary fixed inset-x-0 top-0 z-10 flex justify-between px-5 py-3.75 text-lg">
+      <main className="relative top-14 flex min-h-[calc(100dvh-56px)] flex-col select-none">
+         <nav className="bg-white-primary fixed inset-x-0 top-0 z-100 flex justify-between px-5 py-3.75 text-lg">
             <p className="font-inter font-bold sm:hidden">Home</p>
             <button
                className="sm:hidden"
@@ -35,13 +35,6 @@ export default function Home() {
                </Link>
             </div>
          </nav>
-         <div className="absolute inset-x-0 top-14 flex min-h-screen grow flex-col">
-            <div className="absolute inset-0 -z-10">
-               <Library className="absolute inset-0 size-full object-cover" />
-               <div className="bg-green-primary/70 absolute inset-0" />
-            </div>
-            <Landing />
-         </div>
          <nav
             className={clsx(
                "font-inter bg-white-primary fixed inset-x-0 top-14 overflow-y-hidden text-lg font-medium shadow-md transition-[height] duration-300 sm:hidden",
@@ -76,6 +69,11 @@ export default function Home() {
                </span>
             </Link>
          </nav>
+         <div className="fixed inset-0 -z-10">
+            <Library className="absolute inset-0 size-full object-cover" />
+            <div className="bg-green-primary/70 absolute inset-0" />
+         </div>
+         <Landing />
       </main>
    );
 }
