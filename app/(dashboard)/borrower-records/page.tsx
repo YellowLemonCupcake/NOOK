@@ -143,7 +143,26 @@ export default async function BorrowerRecordsPage({
 }) {
    return (
       <DialogProvider>
-         <Suspense>
+         <Suspense
+            fallback={
+               <div className="overflow-x-auto">
+                  <Table
+                     headers={[
+                        "No.",
+                        "ID",
+                        "Name",
+                        "Program",
+                        "Year",
+                        "College",
+                        "Action",
+                     ]}
+                     extraStyling="min-w-150"
+                  >
+                     <FallbackRow />
+                  </Table>
+               </div>
+            }
+         >
             <SuspendedBorrowerRecords searchParams={searchParams} />
          </Suspense>
          <AddRecord />

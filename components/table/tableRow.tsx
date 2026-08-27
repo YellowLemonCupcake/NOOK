@@ -10,8 +10,8 @@ export default function TableRow({
    return (
       <tr
          className={clsx(
-            "text-center hover:bg-blue-50",
-            index % 2 === 0 && "bg-gray-50",
+            "bg-gray-50 text-center hover:bg-blue-50",
+            index % 2 === 0 && "bg-gray-100",
          )}
       >
          {data.map((d, i) => (
