@@ -1,15 +1,18 @@
 import Image, { ImageProps } from "next/image";
 
 export function Nook1(props: Partial<ImageProps>) {
+   const { style, ...imageProps } = props;
+
    return (
       <Image
          src="/icon1.svg"
          alt=""
          draggable={false}
-         width={1}
-         height={1}
+         width={196}
+         height={87}
          loading="eager"
-         {...props}
+         {...imageProps}
+         style={{ height: "auto", ...style }}
       />
    );
 }
