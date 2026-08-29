@@ -1,6 +1,10 @@
 "use server";
 
-import { logsPage, pendingBorrowerRecordPage } from "@/constants";
+import {
+   logsPage,
+   pendingBorrowerRecordPage,
+   topBorrowersPage,
+} from "@/constants";
 import { updateCachedPendingBorrowerRecordsCount } from "@/data-access-layer/PendingBorrowerRecords";
 import { auth } from "@/lib/auth";
 import { fetchBook, normalizeIsbn } from "@/lib/fetchBook";
@@ -33,7 +37,7 @@ export default async function createBorrowLog(
 
    try {
       const book = normalizedISBN ? await fetchBook(normalizedISBN) : null;
-      const existingBorrower = await prisma.borrower.findUnique({
+      const existingBorrowerRecord = await prisma.borrower.findUnique({
          where: { idNumber: idNumber.trim() },
          select: { name: true, program: true, college: true, yearLevel: true },
       });
@@ -48,16 +52,17 @@ export default async function createBorrowLog(
          [
             phDateString,
             idNumber,
-            existingBorrower?.name,
-            existingBorrower?.program,
-            existingBorrower?.yearLevel,
-            existingBorrower?.college,
+            existingBorrowerRecord?.name,
+            existingBorrowerRecord?.program,
+            existingBorrowerRecord?.yearLevel,
+            existingBorrowerRecord?.college,
             bookCode,
             book?.title,
             book?.authors,
          ],
       ]);
-      if (!existingBorrower) {
+
+      if (!existingBorrowerRecord) {
          await prisma.pendingRegistration.upsert({
             create: {
                idNumber: idNumber.trim(),
@@ -85,12 +90,13 @@ export default async function createBorrowLog(
       });
 
       revalidatePath(logsPage);
+      revalidatePath(topBorrowersPage);
 
       return {
          ok: true,
          data: {
-            message: existingBorrower
-               ? `Borrow logged for ${existingBorrower.name}.`
+            message: existingBorrowerRecord
+               ? `Borrow logged for ${existingBorrowerRecord.name}.`
                : `Borrow logged. Borrower ${idNumber} is not yet registered — added to pending registration.`,
          },
       };
