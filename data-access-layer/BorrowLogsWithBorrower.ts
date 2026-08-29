@@ -1,6 +1,6 @@
 import { Prisma } from "@/generated/prisma/client";
 import { BorrowerGetPayload, BorrowLogModel } from "@/generated/prisma/models";
-// import { auth } from "@/lib/auth";
+import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { Result } from "@/lib/types";
 import { cacheLife } from "next/cache";
@@ -31,10 +31,10 @@ export default async function getLogsWithBorrower(
    page = 1,
    pageSize = LOGS_PAGE_SIZE,
 ): Promise<Result<PaginatedBorrowLogs>> {
-   // const session = await auth();
-   // if (!session?.user) {
-   //    return { ok: false, error: "AUTH", message: "Unauthorized" };
-   // }
+   const session = await auth();
+   if (!session?.user) {
+      return { ok: false, error: "AUTH", message: "Unauthorized" };
+   }
 
    try {
       const logsWithBorrower = await getCachedLogsWithBorrower(
