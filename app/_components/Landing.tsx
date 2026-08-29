@@ -14,7 +14,7 @@ async function SuspendedTopBorrowerTable() {
 
 function TopBorrowers() {
    return (
-      <div className="flex min-h-100 flex-col px-4 sm:px-10 md:min-h-auto">
+      <div className="flex flex-col px-4 sm:px-10">
          <p className="border-yellow-primary font-inter mb-2 border-l-8 px-2 text-xl font-bold">
             Top Borrowers
          </p>

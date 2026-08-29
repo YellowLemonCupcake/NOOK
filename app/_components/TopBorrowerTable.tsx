@@ -27,7 +27,7 @@ export default function TopBorrowerTable({
                   key={b.idNumber}
                   className="flex max-h-7 min-h-6 grow items-stretch"
                >
-                  <p className="flex w-7 items-center justify-end pr-1.5 text-center">
+                  <p className="flex w-5.5 items-center justify-end pr-2 text-center">
                      {b._count.bookBarcode}
                   </p>
                   <div className="relative grow">
