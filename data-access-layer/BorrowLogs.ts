@@ -1,5 +1,5 @@
 import { Prisma } from "@/generated/prisma/client";
-import { auth } from "@/lib/auth";
+// import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { cacheLife } from "next/cache";
 import type { Result } from "@/lib/types";
@@ -10,10 +10,10 @@ export async function getBorrowLogs(
    from?: Date,
    to?: Date,
 ): Promise<Result<BorrowLogModel[]>> {
-   const session = await auth();
-   if (!session?.user) {
-      return { ok: false, error: "AUTH", message: "Unauthorized" };
-   }
+   // const session = await auth();
+   // if (!session?.user) {
+   //    return { ok: false, error: "AUTH", message: "Unauthorized" };
+   // }
 
    try {
       const logs = await getCachedBorrowLogs(idNumber, from, to);
