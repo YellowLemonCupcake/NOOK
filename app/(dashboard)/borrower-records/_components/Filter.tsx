@@ -4,7 +4,7 @@ import { programs, colleges } from "@/constants";
 import { Input } from "@/components/ui/input";
 import { usePathname, useRouter } from "next/navigation";
 import { SubmitEvent, useState, useTransition } from "react";
-import { ListFilter } from "lucide-react";
+import { ListFilter, LoaderCircle } from "lucide-react";
 import clsx from "clsx";
 import { Button } from "@/components/ui/button";
 
@@ -139,20 +139,29 @@ export default function Filter({
                   ))}
                </select>
             </label>
-            <button
+            <Button
                disabled={isPendingClearing || isPendingFiltering}
-               className="bg-green-primary h-8 rounded-md px-3 text-sm font-medium text-white"
+               type="submit"
+               className={clsx(
+                  "bg-green-primary hover:bg-green-primary/80 h-8 rounded-md px-3 text-sm font-medium text-white",
+                  isPendingFiltering || (isPendingClearing && "opacity-80"),
+               )}
             >
-               {isPendingFiltering ? "Filtering..." : "Filter"}
-            </button>
-            <button
+               {isPendingFiltering && (
+                  <span>
+                     <LoaderCircle className="animate-spin" size={20} />
+                  </span>
+               )}
+               Filter
+            </Button>
+            <Button
                type="button"
                disabled={isPendingClearing || isPendingFiltering}
                onClick={clearFilters}
-               className="h-8 rounded-md px-3 text-sm hover:bg-black/5"
+               className="h-8 rounded-md bg-transparent px-3 text-sm text-black hover:bg-black/5"
             >
                Clear
-            </button>
+            </Button>
          </form>
       </>
    );
