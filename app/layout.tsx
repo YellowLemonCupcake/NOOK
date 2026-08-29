@@ -11,6 +11,7 @@ import clsx from "clsx";
 import { AuthProvider } from "./sessionProvider";
 import { ToastContainer } from "react-toastify";
 import { cn } from "@/lib/utils";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -54,6 +55,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
          )}
       >
          <body className="flex min-h-full flex-col bg-[#f9fafb]">
+            <SpeedInsights />
             <ToastContainer
                position="bottom-right"
                closeButton={false}
