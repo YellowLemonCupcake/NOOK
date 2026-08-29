@@ -96,7 +96,7 @@ async function SuspendedFilter({
    const { from, to, idNumber } = await searchParams;
    return (
       <Filter
-         // key={`${from ?? ""}:${to ?? ""}:${idNumber ?? ""}`}
+         key={`${from ?? ""}:${to ?? ""}:${idNumber ?? ""}`}
          from={from}
          to={to}
          idNumber={idNumber}
@@ -111,9 +111,9 @@ export default async function Logs({
 }) {
    return (
       <>
-         <Suspense>
+         {/* <Suspense>
             <SuspendedFilter searchParams={searchParams} />
-         </Suspense>
+         </Suspense> */}
          <div className="overflow-x-auto">
             <Table
                headers={[
@@ -134,9 +134,9 @@ export default async function Logs({
                </Suspense>
             </Table>
          </div>
-         <Suspense>
+         {/* <Suspense>
             <SuspendedPagination searchParams={searchParams} />
-         </Suspense>
+         </Suspense> */}
       </>
    );
 }
