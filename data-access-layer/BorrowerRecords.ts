@@ -20,10 +20,10 @@ export async function getBorrowerRecords(
    page = 1,
    pageSize = BORROWERS_PAGE_SIZE,
 ): Promise<Result<PaginatedBorrowers>> {
-   // const session = await auth();
-   // if (!session?.user) {
-   //    return { ok: false, error: "AUTH", message: "Unauthorized" };
-   // }
+   const session = await auth();
+   if (!session?.user) {
+      return { ok: false, error: "AUTH", message: "Unauthorized" };
+   }
 
    try {
       const records = await getCachedBorrowerRecords(

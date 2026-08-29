@@ -8,10 +8,10 @@ import { PendingRegistrationModel } from "@/generated/prisma/models";
 export async function getPendingBorrowerRecords(): Promise<
    Result<PendingRegistrationModel[]>
 > {
-   // const session = await auth();
-   // if (!session?.user) {
-   //    return { ok: false, error: "AUTH", message: "Unauthorized" };
-   // }
+   const session = await auth();
+   if (!session?.user) {
+      return { ok: false, error: "AUTH", message: "Unauthorized" };
+   }
 
    try {
       const pendingRegistrations = await getCachedPendingBorrowerRecords();
