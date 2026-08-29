@@ -36,14 +36,14 @@ export default function ScannerPage() {
       {
          label: "Student ID",
          description:
-            "Nook automatically pulls matching student data into your Google Sheet. If no match for the Student ID is found, the row is still inserted with blank student fields, and a pending registration is created — once completed, those fields are filled in automatically.",
+            "If no student match is found, the log is still added with blank student fields, and a pending registration is created. Once completed, those details are filled in automatically.",
          placeholder: "e.g. 241-04321",
          name: "borrowerId",
          inputValue: infos.borrowerId,
       },
       {
          label: "Book Barcode",
-         description: "Scan the book's barcode, or enter it manually above.",
+         description: "Scan the book’s barcode, or enter it manually above.",
          placeholder: "e.g. CSUL000...",
          name: "bookCode",
          inputValue: infos.bookCode,
@@ -51,7 +51,7 @@ export default function ScannerPage() {
       {
          label: "Book ISBN",
          description:
-            "Scan the book's ISBN to fetch its title and author automatically.",
+            "Scan the book’s ISBN, or enter it manually above to auto-fill the title and author.",
          placeholder: "ISBN",
          name: "bookISBN",
          inputValue: infos.bookISBN,

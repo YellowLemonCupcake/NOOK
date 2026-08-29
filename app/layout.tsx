@@ -53,7 +53,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             geist.variable,
          )}
       >
-         <body className="flex min-h-full flex-col">
+         <body className="flex min-h-full flex-col bg-[#f9fafb]">
             <ToastContainer
                position="bottom-right"
                closeButton={false}

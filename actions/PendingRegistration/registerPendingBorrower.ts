@@ -37,37 +37,48 @@ export default async function registerPendingBorrower(
          };
 
       const spreadsheetId = await getSpreadsheetId(session.user.id);
-      await sheetsService.spreadsheets.values.batchUpdate({
-         spreadsheetId,
-         requestBody: {
-            valueInputOption: "USER_ENTERED",
-            data: pendingRegistration.tableRanges.map((range) => ({
-               range,
-               values: [
-                  [null, null, normalizedName, program, yearLevel, college],
-               ],
-            })),
+
+      const newRecord = await prisma.$transaction(
+         async (tx) => {
+            const record = await tx.borrower.create({
+               data: {
+                  idNumber: pendingRegistration.idNumber,
+                  name: normalizedName,
+                  yearLevel: program === "INSTRUCTOR" ? 0 : yearLevel,
+                  program,
+                  college,
+               },
+               select: { idNumber: true },
+            });
+
+            await tx.pendingRegistration.delete({
+               where: { id: pendingRegistration.id },
+            });
+
+            await sheetsService.spreadsheets.values.batchUpdate({
+               spreadsheetId,
+               requestBody: {
+                  valueInputOption: "USER_ENTERED",
+                  data: pendingRegistration.tableRanges.map((range) => ({
+                     range,
+                     values: [
+                        [
+                           null,
+                           null,
+                           normalizedName,
+                           program,
+                           yearLevel,
+                           college,
+                        ],
+                     ],
+                  })),
+               },
+            });
+
+            return record;
          },
-      });
-
-      const newRecord = await prisma.$transaction(async (transaction) => {
-         const record = await transaction.borrower.create({
-            data: {
-               idNumber: pendingRegistration.idNumber,
-               name: normalizedName,
-               yearLevel: program === "INSTRUCTOR" ? 0 : yearLevel,
-               program,
-               college,
-            },
-            select: { idNumber: true },
-         });
-
-         await transaction.pendingRegistration.delete({
-            where: { id: pendingRegistration.id },
-         });
-
-         return record;
-      });
+         { timeout: 10000 },
+      );
 
       revalidatePath(borrowerRecordsPage);
       revalidatePath(pendingBorrowerRecordPage);
