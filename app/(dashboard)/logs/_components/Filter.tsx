@@ -116,7 +116,7 @@ export default function Filter({
          <Button
             onClick={() => setShowFilter((prev) => !prev)}
             className={
-               "bg-white-primary flex items-center gap-2 text-black hover:bg-black/5"
+               "flex items-center gap-2 bg-transparent text-black hover:bg-black/5"
             }
          >
             <span>

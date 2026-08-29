@@ -57,8 +57,8 @@ async function Suspended({ searchParams }: { searchParams: SearchParameters }) {
             row.borrower?.yearLevel,
             row.borrower?.college,
             row.bookBarcode,
-            row.bookTitle,
-            row.bookAuthor,
+            // row.bookTitle,
+            // row.bookAuthor,
          ]}
       />
    ));
@@ -110,7 +110,7 @@ export default async function Logs({
    searchParams: SearchParameters;
 }) {
    return (
-      <div className="p-3 pb-25">
+      <>
          <Suspense>
             <SuspendedFilter searchParams={searchParams} />
          </Suspense>
@@ -123,11 +123,11 @@ export default async function Logs({
                   "Program",
                   "Year",
                   "College",
-                  "Barcode",
-                  "Title",
-                  "Author",
+                  "Book Barcode",
+                  // "Title",
+                  // "Author",
                ]}
-               extraStyling="min-w-250"
+               extraStyling="min-w-230"
             >
                <Suspense fallback={<FallbackRow />}>
                   <Suspended searchParams={searchParams} />
@@ -137,6 +137,6 @@ export default async function Logs({
          <Suspense>
             <SuspendedPagination searchParams={searchParams} />
          </Suspense>
-      </div>
+      </>
    );
 }

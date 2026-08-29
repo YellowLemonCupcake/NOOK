@@ -45,7 +45,7 @@ async function Suspended({ searchParams }: { searchParams: SearchParameters }) {
    if (res.data.borrowers.length === 0)
       return (
          <tr>
-            <td colSpan={10} className="py-4">
+            <td colSpan={10} className="py-2">
                <div className="mx-auto flex w-fit items-center gap-1 font-medium">
                   <span>
                      <File size={15} />

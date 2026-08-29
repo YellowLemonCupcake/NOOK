@@ -1,5 +1,6 @@
 export const adminLoginPage = "/admin";
 export const logsPage = "/logs";
+export const topBorrowersPage = "/logs/top-borrowers";
 export const borrowerRecordsPage = "/borrower-records";
 export const importBorrowerRecordsPage = "/borrower-records/import";
 export const pendingBorrowerRecordPage = "/borrower-records/pending";

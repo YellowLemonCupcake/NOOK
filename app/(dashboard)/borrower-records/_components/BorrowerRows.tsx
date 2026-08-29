@@ -79,7 +79,7 @@ function BorrowerRow({
             borrowerRecord.yearLevel,
             borrowerRecord.college,
             <>
-               <div className="space-x-3 py-2">
+               <div className="space-x-3 py-1">
                   <button onClick={onEdit} className="text-blue-700">
                      <Edit size={18} />
                   </button>

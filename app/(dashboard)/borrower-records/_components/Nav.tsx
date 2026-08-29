@@ -1,9 +1,14 @@
 import { Suspense } from "react";
-import { AllStudents, Container, PendingStudents } from "./components";
 import { getBorrowerRecordsCount } from "@/data-access-layer/BorrowerRecords";
 import { redirect } from "next/navigation";
-import { adminLoginPage } from "@/constants";
+import {
+   adminLoginPage,
+   borrowerRecordsPage,
+   pendingBorrowerRecordPage,
+} from "@/constants";
 import { getPendingBorrowerRecordsCount } from "@/data-access-layer/PendingBorrowerRecords";
+import { PillTabContainer } from "@/components/pill-tab/container";
+import { Pill } from "@/components/pill-tab/pill";
 
 async function AllStudentsCount() {
    const studentCount = await getBorrowerRecordsCount();
@@ -11,7 +16,7 @@ async function AllStudentsCount() {
       if (studentCount.error === "AUTH") redirect(adminLoginPage);
       return null;
    }
-   return <span className="opacity-70">{studentCount.data}</span>;
+   return <span className="opacity-80">{studentCount.data}</span>;
 }
 async function PendingStudentsCount() {
    const pendingStudentCount = await getPendingBorrowerRecordsCount();
@@ -29,17 +34,17 @@ async function PendingStudentsCount() {
 
 export default function Nav() {
    return (
-      <Container>
-         <AllStudents>
+      <PillTabContainer>
+         <Pill label="All" targetRoute={borrowerRecordsPage}>
             <Suspense>
                <AllStudentsCount />
             </Suspense>
-         </AllStudents>
-         <PendingStudents>
+         </Pill>
+         <Pill label="Pending" targetRoute={pendingBorrowerRecordPage}>
             <Suspense>
                <PendingStudentsCount />
             </Suspense>
-         </PendingStudents>
-      </Container>
+         </Pill>
+      </PillTabContainer>
    );
 }
