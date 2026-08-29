@@ -66,7 +66,7 @@ async function getCachedLogsWithBorrower(
    to?: Date,
 ): Promise<PaginatedBorrowLogs> {
    "use cache";
-   cacheLife("minutes");
+   cacheLife("days");
 
    const where = {
       idNumber,
