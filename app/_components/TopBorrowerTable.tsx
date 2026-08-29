@@ -19,13 +19,13 @@ export default function TopBorrowerTable({
 }) {
    const max = topBorrowers[0]?._count.bookBarcode ?? 1;
    return (
-      <div className="font-inter flex h-full flex-col justify-center p-4 text-xs font-medium">
+      <div className="font-inter flex h-full flex-col p-4 text-xs font-medium">
          {topBorrowers.map((b, i) => {
             const percentage = (b._count.bookBarcode / max) * 100;
             return (
                <div
                   key={b.idNumber}
-                  className="flex min-h-6 grow items-stretch"
+                  className="flex max-h-7 min-h-6 grow items-stretch"
                >
                   <p className="flex w-7 items-center justify-end pr-1.5 text-center">
                      {b._count.bookBarcode}

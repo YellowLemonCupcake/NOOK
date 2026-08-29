@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import {
    adminLoginPage,
    borrowerRecordsPage,
+   importBorrowerRecordsPage,
    pendingBorrowerRecordPage,
 } from "@/constants";
 import { getPendingBorrowerRecordsCount } from "@/data-access-layer/PendingBorrowerRecords";
@@ -34,7 +35,7 @@ async function PendingStudentsCount() {
 
 export default function Nav() {
    return (
-      <PillTabContainer>
+      <PillTabContainer cols={3}>
          <Pill label="All" targetRoute={borrowerRecordsPage}>
             <Suspense>
                <AllStudentsCount />
@@ -45,6 +46,7 @@ export default function Nav() {
                <PendingStudentsCount />
             </Suspense>
          </Pill>
+         <Pill targetRoute={importBorrowerRecordsPage} label="Import" />
       </PillTabContainer>
    );
 }

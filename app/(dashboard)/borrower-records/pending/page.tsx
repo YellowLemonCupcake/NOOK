@@ -31,7 +31,7 @@ async function Suspended() {
 
 export default function PendingRegistrationPage() {
    return (
-      <div className="overflow-x-auto">
+      <div className="mt-2 overflow-x-auto">
          <Table
             headers={[
                "ID-Number",

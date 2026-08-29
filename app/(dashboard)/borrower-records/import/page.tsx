@@ -2,7 +2,7 @@
 
 import importRecords from "@/actions/BorrowerRecords/importRecords";
 import { borrowerRecordsPage } from "@/constants";
-import { ChevronLeft, LoaderCircle } from "lucide-react";
+import { ChevronLeft, Download, LoaderCircle } from "lucide-react";
 import Link from "next/link";
 import { useActionState, useState } from "react";
 import { toast } from "react-toastify";
@@ -39,16 +39,7 @@ export default function ImportPage() {
    const [, formAction, isPending] = useActionState(onAction, null);
 
    return (
-      <div className="font-inter mx-auto p-7 text-gray-700 select-none">
-         <Link
-            href={borrowerRecordsPage}
-            className="mb-5 flex w-fit items-center gap-1.5 text-sm"
-         >
-            <span>
-               <ChevronLeft size={15} />
-            </span>
-            Back
-         </Link>
+      <div className="font-inter mx-auto mt-4 px-2 text-gray-700 select-none">
          <h1 className="text-xl font-semibold">Import Student Record</h1>
          <form action={formAction} className="mt-2 space-y-2">
             <div>
@@ -90,14 +81,22 @@ export default function ImportPage() {
             </div>
             <button
                disabled={isPending}
-               className="font-roboto bg-yellow-primary mt-2 rounded-lg px-4 py-2 font-medium shadow-sm"
+               className="font-roboto bg-yellow-primary mt-4 flex items-center gap-2 rounded-lg px-4 py-2 font-medium shadow-sm"
             >
                {isPending ? (
-                  <span>
-                     <LoaderCircle className="animate-spin" />
-                  </span>
+                  <>
+                     <span>
+                        <LoaderCircle className="animate-spin" />
+                     </span>{" "}
+                     Import
+                  </>
                ) : (
-                  "Import"
+                  <>
+                     <span>
+                        <Download size={17} />
+                     </span>{" "}
+                     Import
+                  </>
                )}
             </button>
             {error && (
