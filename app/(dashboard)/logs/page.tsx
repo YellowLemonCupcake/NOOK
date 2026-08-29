@@ -96,7 +96,7 @@ async function SuspendedFilter({
    const { from, to, idNumber } = await searchParams;
    return (
       <Filter
-         key={`${from ?? ""}:${to ?? ""}:${idNumber ?? ""}`}
+         // key={`${from ?? ""}:${to ?? ""}:${idNumber ?? ""}`}
          from={from}
          to={to}
          idNumber={idNumber}
