@@ -78,8 +78,8 @@ export const authOptions = {
 
          if (
             trigger === "signIn" &&
-            user?.email &&
-            account?.provider === "google"
+            account?.provider === "google" &&
+            user?.email
          ) {
             const userFromDb = await prisma.adminAccount.findUnique({
                where: { email: user.email },

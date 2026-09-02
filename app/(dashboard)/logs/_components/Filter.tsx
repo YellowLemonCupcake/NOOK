@@ -1,6 +1,6 @@
 "use client";
 
-import { format, parseISO } from "date-fns";
+import { endOfDay, format, parseISO } from "date-fns";
 import {
    ChevronDownIcon,
    FilterIcon,
@@ -95,7 +95,6 @@ export default function Filter({
       if (idNumber.trim()) params.set("idNumber", idNumber.trim());
       if (from) params.set("from", format(from, "yyyy-MM-dd"));
       if (to) params.set("to", format(to, "yyyy-MM-dd"));
-
       const query = params.toString();
       startTransitionFiltering(() => {
          router.replace(query ? `${pathname}?${query}` : pathname);

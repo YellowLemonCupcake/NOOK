@@ -3,11 +3,24 @@ import Table from "@/components/table/table";
 import TableRow from "@/components/table/tableRow";
 import { adminLoginPage } from "@/constants";
 import getTopBorrowers from "@/data-access-layer/TopBorrowers";
+import { endOfDay, parseISO, startOfDay } from "date-fns";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
-async function SuspendedTopRows() {
-   const top = await getTopBorrowers();
+type SearchParameters = Promise<{ from?: string; to?: string }>;
+
+async function SuspendedTopRows({
+   searchParams,
+}: {
+   searchParams: SearchParameters;
+}) {
+   const { from: initialFrom, to: initialTo } = await searchParams;
+   const from = initialFrom ? parseISO(initialFrom) : undefined;
+   const to = initialTo ? parseISO(initialTo) : undefined;
+   const top = await getTopBorrowers(
+      from ? startOfDay(from) : undefined,
+      to ? endOfDay(to) : undefined,
+   );
    if (!top.ok) {
       if (top.error === "AUTH") redirect(adminLoginPage);
       return <>Error</>;
@@ -21,12 +34,16 @@ async function SuspendedTopRows() {
    ));
 }
 
-export default function TopBorrowersPage() {
+export default function TopBorrowersPage({
+   searchParams,
+}: {
+   searchParams: SearchParameters;
+}) {
    return (
       <>
          <Table headers={["No.", "ID-Number", "Times Borrowed"]}>
             <Suspense fallback={<FallbackRow />}>
-               <SuspendedTopRows />
+               <SuspendedTopRows searchParams={searchParams} />
             </Suspense>
          </Table>
       </>
